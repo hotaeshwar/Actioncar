@@ -18,19 +18,7 @@ const BusinessDescription = ({ setCurrentView }) => {
             {/* Business description text */}
             <div className="mb-4 sm:mb-6 md:mb-8 lg:mb-10 xl:mb-12">
               <span className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl leading-relaxed sm:leading-relaxed md:leading-loose lg:leading-loose xl:leading-loose block" style={{ color: '#1393c4' }}>
-                <span className="font-semibold">Locally owned and operated since 2011</span>,
-                specialized in <span className="font-medium">deep interior cleaning</span>,
-                <span className="font-medium">paint correction</span>,
-                <span className="font-medium">Ceramic coating</span>, and
-                <span className="font-medium">Window tinting</span>.
-                We are <span className="font-semibold">MPI accredited auto detailing shop</span>.
-                We are proud to be member of <span className="font-semibold">CFIB and BBB with A+ rating</span>.
-                Our reputation is backed up by several accolades that prove our years of commitment to consumer care.
-                Our most recent has come in the form of a
-                <span className="font-bold">2025 Consumer Choice Award</span>.
-                We're proud to be the <span className="font-semibold">only winner in our industry</span>.
-                We have team of <span className="font-medium">factory trained professionals</span> to work on your vehicle.
-                We are certified <span className="font-semibold">XPEL certified dealer and installation center</span>.
+                <span className="font-semibold">Locally owned and operated since 2011</span>, specialized in <span className="font-medium">Auto Detailing</span>, <span className="font-medium">Ceramic Coating</span>, <span className="font-medium">Window Tinting</span>, <span className="font-medium">Paint Protection Film (PPF)</span>, and <span className="font-medium">Paintless Dent Removal</span>. We are <span className="font-semibold">MPI accredited auto detailing shop</span>. We are proud to be member of <span className="font-semibold">CFIB and BBB with A+ rating</span>. Our reputation is backed up by several accolades that prove our years of commitment to consumer care. Our most recent has come in the form of a <span className="font-bold">2025 Consumer Choice Award</span>. We're proud to be the <span className="font-semibold">only winner in our industry</span>. We have team of <span className="font-medium">factory trained professionals</span> to work on your vehicle. We are certified <span className="font-semibold">XPEL certified dealer and installation center</span>.
               </span>
             </div>
 

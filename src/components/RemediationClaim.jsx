@@ -3,6 +3,7 @@ import { CheckCircle, AlertTriangle, Droplets, Flame, Shield, Bug, Car, X, Chevr
 import Footer from '../components/Footer';
 import ContactForm from '../components/ContactForm';
 import References from '../components/Reference1';
+import VideoCarousel from '../components/VideoCarousel';
 import insuranceLogo from '../assets/images/insurance.png';
 import heroBackground from '../assets/images/car6.jpg';
 
@@ -448,6 +449,8 @@ const RemediationClaim = () => {
           </div>
         </div>
       </div>
+
+      <VideoCarousel />
 
       <div className="bg-white py-16 sm:py-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">

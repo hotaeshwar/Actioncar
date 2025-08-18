@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Car, Clock, Plus, Calendar, ShoppingCart, ChevronLeft, ChevronRight, Check, User, Mail, Phone, MessageSquare } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Clock, ChevronLeft, ChevronRight, Check, Car, Truck } from 'lucide-react';
 
 const BookingForm = () => {
   const [selectedVehicle, setSelectedVehicle] = useState('');
@@ -8,6 +8,8 @@ const BookingForm = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [priceAnimation, setPriceAnimation] = useState(false);
+  const [showAllAddOns, setShowAllAddOns] = useState(false);
   const [bookingData, setBookingData] = useState({
     firstName: '',
     lastName: '',
@@ -18,65 +20,108 @@ const BookingForm = () => {
   });
 
   const vehicleTypes = [
-    { id: 'coupe', name: 'Coupe (2 doors) size car', icon: Car, selected: false },
-    { id: 'sedan', name: 'Sedan (4 doors)', icon: Car, selected: false },
-    { id: 'compact-suv', name: 'Compact Small SUV', icon: Car, selected: false },
-    { id: 'large-suv', name: 'Large SUV/Van/Truck', icon: Car, selected: false }
-  ];
-
-  const washPackages = [
     {
-      id: 'silver',
-      name: 'Silver Package',
-      duration: '5-6 Hours',
-      price: 180,
-      features: [
-        'Interior Vacuum, Carpet and Seats Shampoo',
-        'Interior panels Steam Clean & Polish',
-        'Exterior Hand Wash',
-        'Door jambs Wipe Down',
-        'Windows Clean',
-        'Trunk Vacuum',
-        'Extra Charge for Pet Hairs Removal and Heavily soiled vehicles'
-      ]
+      id: 'coupe',
+      name: 'Coupe (2 doors) size car',
+      icon: Car,
+      selected: false
     },
     {
-      id: 'gold',
-      name: 'Gold Package',
-      duration: '6-7 Hours',
-      price: 250,
-      features: [
-        'Silver package plus Engine Shampoo',
-        'Headliner Shampoo',
-        'Hand Carnauba Wax',
-        'Trunk Shampoo',
-        'Complete interior and exterior detailing package',
-        'Extra Charge for Pet Hairs Removal and Heavily soiled vehicles'
-      ]
+      id: 'sedan',
+      name: 'Sedan (4 doors)',
+      icon: Car,
+      selected: false
     },
     {
-      id: 'diamond',
-      name: 'Diamond Package',
-      duration: '7-8 Hours',
-      price: 390,
-      features: [
-        'Gold package plus Paint Decontamination wash',
-        'Paint Clay bar treatment',
-        'Tar removal',
-        'Paint correction polish (One stage)',
-        'Extra Charge for Pet Hairs Removal',
-        'excessive tar removal and Heavily soiled vehicles'
-      ]
+      id: 'compact-suv',
+      name: 'Compact Small SUV',
+      icon: Truck,
+      selected: false
+    },
+    {
+      id: 'large-suv',
+      name: 'Large SUV/Van/Truck',
+      icon: Truck,
+      selected: false
     }
   ];
+
+  // Dynamic pricing based on vehicle type
+  const getPackagePricing = (vehicleId) => {
+    const pricingMap = {
+      'coupe': { silver: 180, gold: 250, diamond: 390 },
+      'sedan': { silver: 195, gold: 270, diamond: 420 },
+      'compact-suv': { silver: 195, gold: 270, diamond: 420 },
+      'large-suv': { silver: 205, gold: 290, diamond: 450 }
+    };
+    return pricingMap[vehicleId] || pricingMap['coupe'];
+  };
+
+  const getWashPackages = () => {
+    const pricing = selectedVehicle ? getPackagePricing(selectedVehicle.id) : getPackagePricing('coupe');
+
+    return [
+      {
+        id: 'silver',
+        name: 'Silver Package',
+        duration: '5-6 Hours',
+        price: pricing.silver,
+        features: [
+          'Interior Vacuum, Carpet and Seats Shampoo',
+          'Interior panels Steam Clean & Polish',
+          'Exterior Hand Wash',
+          'Door jambs Wipe Down',
+          'Windows Clean',
+          'Trunk Vacuum',
+          'Extra Charge for Pet Hairs Removal and Heavily soiled vehicles'
+        ]
+      },
+      {
+        id: 'gold',
+        name: 'Gold Package',
+        duration: '6-7 Hours',
+        price: pricing.gold,
+        features: [
+          'Silver package plus Engine Shampoo',
+          'Headliner Shampoo',
+          'Hand Carnauba Wax',
+          'Trunk Shampoo',
+          'Complete interior and exterior detailing package',
+          'Extra Charge for Pet Hairs Removal and Heavily soiled vehicles'
+        ]
+      },
+      {
+        id: 'diamond',
+        name: 'Diamond Package',
+        duration: '7-8 Hours',
+        price: pricing.diamond,
+        features: [
+          'Gold package plus Paint Decontamination wash',
+          'Paint Clay bar treatment',
+          'Tar removal',
+          'Paint correction polish (One stage)',
+          'Extra Charge for Pet Hairs Removal',
+          'excessive tar removal and Heavily soiled vehicles'
+        ]
+      }
+    ];
+  };
 
   const addOnOptions = [
     { id: 'pet-removal', name: 'Pet hairs removal', price: 0, duration: '30min' },
     { id: 'headlight', name: 'Headlights Restoration (30 min)', price: 80, duration: '30min' },
     { id: 'odor', name: 'Odor Elimination and sanitization (180 min)', price: 80, duration: '180min' },
     { id: 'fabric', name: 'Fabric protector (carpet and seats) (40 min)', price: 80, duration: '40min' },
-    { id: 'decontamination', name: 'Decontamination Wash (30 min)', price: 30, duration: '30min' }
+    { id: 'decontamination', name: 'Decontamination Wash (30 min)', price: 30, duration: '30min' },
+    { id: 'paint-correction-1', name: 'Paint correction (One stage) (2 Hours)', price: 150, duration: '2hr' },
+    { id: 'paint-correction-2', name: 'Paint correction (Two stage) (180 min)', price: 200, duration: '180min' },
+    { id: 'paint-correction-3', name: 'Paint correction (Three stage) (240 min)', price: 450, duration: '240min' },
+    { id: 'paint-correction-4', name: 'Paint correction (Four stage) (300 min)', price: 600, duration: '300min' }
   ];
+
+  const basicAddOns = addOnOptions.slice(0, 5); // First 5 options
+  const advancedAddOns = addOnOptions.slice(5); // Paint correction options
+  const displayedAddOns = showAllAddOns ? addOnOptions : basicAddOns;
 
   const timeSlots = [
     '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
@@ -138,10 +183,32 @@ const BookingForm = () => {
 
   const handleVehicleSelect = (vehicle) => {
     setSelectedVehicle(vehicle);
+    // Reset selected package when vehicle changes to update pricing
+    setSelectedPackage(null);
+
+    // Trigger price animation
+    setPriceAnimation(true);
+    setTimeout(() => setPriceAnimation(false), 600);
+
+    // Auto-scroll to packages section after vehicle selection
+    setTimeout(() => {
+      const packagesSection = document.getElementById('packages-section');
+      if (packagesSection) {
+        packagesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 300);
   };
 
   const handlePackageSelect = (pkg) => {
     setSelectedPackage(pkg);
+
+    // Auto-scroll to add-ons section after package selection
+    setTimeout(() => {
+      const addonsSection = document.getElementById('addons-section');
+      if (addonsSection) {
+        addonsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 300);
   };
 
   const handleAddOnToggle = (addon) => {
@@ -153,17 +220,43 @@ const BookingForm = () => {
         return [...prev, addon];
       }
     });
+
+    // Auto-scroll to date section after any add-on interaction
+    setTimeout(() => {
+      const dateSection = document.getElementById('date-section');
+      if (dateSection) {
+        dateSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 300);
   };
 
   const handleDateSelect = (day) => {
     if (day && !isPastDate(day)) {
       const selected = `${months[currentMonth.getMonth()]} ${day}, ${currentMonth.getFullYear()}`;
       setSelectedDate(selected);
+
+      // Auto-scroll to time slots when date is selected
+      setTimeout(() => {
+        const timeSlots = document.querySelector('.grid.grid-cols-3.sm\\:grid-cols-4.md\\:grid-cols-6');
+        if (timeSlots) {
+          timeSlots.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 300);
     }
   };
 
   const handleTimeSelect = (time) => {
     setSelectedTime(time);
+
+    // Auto-scroll to contact section when both date and time are selected
+    if (selectedDate && time) {
+      setTimeout(() => {
+        const contactSection = document.getElementById('contact-section');
+        if (contactSection) {
+          contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 300);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -174,10 +267,16 @@ const BookingForm = () => {
     }));
   };
 
+  const generateBookingId = () => {
+    const timestamp = Date.now();
+    const randomNum = Math.floor(Math.random() * 900000) + 100000;
+    return `ACD-${timestamp}-${randomNum}`;
+  };
+  
   const isFormValid = () => {
-    return selectedVehicle && selectedPackage && selectedDate && selectedTime && 
-           bookingData.firstName && bookingData.lastName && bookingData.email && 
-           bookingData.phone && bookingData.vehicleMake;
+    return selectedVehicle && selectedPackage && selectedDate && selectedTime &&
+      bookingData.firstName && bookingData.lastName && bookingData.email &&
+      bookingData.phone && bookingData.vehicleMake;
   };
 
   const handleSubmit = async () => {
@@ -186,12 +285,14 @@ const BookingForm = () => {
       return;
     }
 
+    const bookingId = generateBookingId();
     const formElement = document.createElement('form');
     formElement.action = 'https://formsubmit.co/actioncardetailing@gmail.com';
     formElement.method = 'POST';
     formElement.style.display = 'none';
 
     const bookingSummary = {
+      'Booking ID': bookingId,
       'Vehicle Type': selectedVehicle.name,
       'Package': selectedPackage.name,
       'Add-ons': selectedAddOns.map(addon => addon.name).join(', ') || 'None',
@@ -204,7 +305,7 @@ const BookingForm = () => {
       'Phone': bookingData.phone,
       'Vehicle Make/Model': bookingData.vehicleMake,
       'Message': bookingData.message,
-      '_subject': 'New Car Wash Booking Request',
+      '_subject': `New Car Wash Booking Request - ID: ${bookingId}`,
       '_replyto': bookingData.email,
       '_captcha': 'false'
     };
@@ -219,73 +320,52 @@ const BookingForm = () => {
 
     document.body.appendChild(formElement);
 
-    alert('Booking submitted successfully! We will confirm your appointment within 24 hours.');
+    alert(`Booking submitted successfully! Your booking ID is: ${bookingId}. We will confirm your appointment within 24 hours.`);
 
     formElement.submit();
   };
+
+  const washPackages = getWashPackages();
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-[#1393c4] mb-4">A La Carte Package Form</h1>
-          <p className="text-gray-600">Complete your booking details below</p>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: '#1393c4' }}>Our Packages</h1>
+          <div className="w-24 h-1 bg-gray-300 mx-auto mb-6"></div>
+          <h2 className="text-2xl md:text-3xl font-semibold text-[#1393c4] mb-6">Pick your vehicle and Detailing Package</h2>
+          <p className="text-lg md:text-xl max-w-4xl mx-auto leading-relaxed mb-6" style={{ color: '#1393c4' }}>
+            Please note for all the services <span style={{ color: '#1393c4' }} className="font-semibold">scheduled</span> later in the <span style={{ color: '#1393c4' }} className="font-semibold">afternoon</span>, <span style={{ color: '#1393c4' }} className="font-semibold">the vehicle pickup will be the next day.</span>
+          </p>
+          <div className="mt-8 text-sm max-w-5xl mx-auto">
+            <p className="font-semibold mb-2" style={{ color: '#1393c4' }}>Features:</p>
+            <p className="leading-relaxed" style={{ color: '#1393c4' }}>
+              Booking system with 5 vehicle types, detail packages, displaying 'a la carte' services menu only and calendar time slots shown when the page first loads, Monday – Saturday working days, 24-hour time format and booking allowed up to 30 days in advance.
+            </p>
+          </div>
         </div>
 
-        {/* Summary Card - Fixed at top */}
-        {(selectedVehicle || selectedPackage || selectedDate || selectedTime) && (
-          <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border-2 border-[#1393c4]">
-            <h3 className="text-xl font-bold text-[#1393c4] mb-4 text-center">Booking Summary</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-center">
-              <div className="bg-blue-50 rounded-lg p-4">
-                <div className="text-sm text-gray-600 mb-1">Vehicle</div>
-                <div className="font-semibold text-[#1393c4]">
-                  {selectedVehicle ? selectedVehicle.name : 'Not selected'}
-                </div>
-              </div>
-              <div className="bg-blue-50 rounded-lg p-4">
-                <div className="text-sm text-gray-600 mb-1">Package</div>
-                <div className="font-semibold text-[#1393c4]">
-                  {selectedPackage ? selectedPackage.name : 'Not selected'}
-                </div>
-              </div>
-              <div className="bg-blue-50 rounded-lg p-4">
-                <div className="text-sm text-gray-600 mb-1">Date & Time</div>
-                <div className="font-semibold text-[#1393c4]">
-                  {selectedDate && selectedTime ? `${selectedDate} at ${selectedTime}` : 'Not selected'}
-                </div>
-              </div>
-              <div className="bg-blue-50 rounded-lg p-4">
-                <div className="text-sm text-gray-600 mb-1">Total Price</div>
-                <div className="font-bold text-xl text-[#1393c4]">{getTotalPrice()}.00 CAD</div>
-              </div>
-            </div>
+        {/* Vehicle Selection - Always at top */}
+        <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200 mb-8">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#1393c4] mb-4">1. VEHICLE TYPE</h2>
+            <p className="text-gray-600">Select your vehicle type below.</p>
           </div>
-        )}
-
-        {/* All sections in one scrollable form */}
-        <div className="space-y-12">
-          
-          {/* Section 1: Vehicle Type */}
-          <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
-            <div className="text-center mb-6">
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#1393c4] mb-4">1. VEHICLE TYPE</h2>
-              <p className="text-gray-600">Select your vehicle type below.</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-              {vehicleTypes.map((vehicle) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {vehicleTypes.map((vehicle) => {
+              const IconComponent = vehicle.icon;
+              return (
                 <div
                   key={vehicle.id}
                   onClick={() => handleVehicleSelect(vehicle)}
-                  className={`p-6 md:p-8 rounded-xl border-2 cursor-pointer transition-all duration-300 hover:shadow-lg transform hover:scale-105 ${
-                    selectedVehicle.id === vehicle.id
+                  className={`p-6 md:p-8 rounded-xl border-2 cursor-pointer transition-all duration-300 hover:shadow-lg transform hover:scale-105 ${selectedVehicle.id === vehicle.id
                       ? 'border-[#1393c4] bg-blue-50 text-[#1393c4]'
                       : 'border-[#1393c4] hover:border-[#0d7aa1] text-[#1393c4] hover:bg-blue-50'
-                  }`}
+                    }`}
                 >
                   <div className="text-center">
-                    <vehicle.icon className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-4 text-[#1393c4]" />
+                    <IconComponent className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-4 text-[#1393c4]" />
                     <h3 className="font-semibold text-sm sm:text-base md:text-lg">{vehicle.name}</h3>
                     {selectedVehicle.id === vehicle.id && (
                       <div className="mt-2">
@@ -294,56 +374,66 @@ const BookingForm = () => {
                     )}
                   </div>
                 </div>
-              ))}
-            </div>
+              );
+            })}
           </div>
+        </div>
 
-          {/* Section 2: Packages */}
-          <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
-            <div className="text-center mb-6">
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#1393c4] mb-4">2. WASH PACKAGES</h2>
-              <p className="text-gray-600">Which wash is best for your vehicle?</p>
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-              {washPackages.map((pkg) => (
-                <div
-                  key={pkg.id}
-                  onClick={() => handlePackageSelect(pkg)}
-                  className={`bg-white rounded-xl border-2 p-6 hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:scale-105 ${
-                    selectedPackage?.id === pkg.id 
-                      ? 'border-[#1393c4] bg-blue-50' 
-                      : 'border-gray-200 hover:border-[#1393c4]'
+        {/* Section 2: Packages - Always shown */}
+        <div id="packages-section" className="bg-white rounded-xl shadow-lg p-8 border border-gray-200 mb-8">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#1393c4] mb-4">2. WASH PACKAGES</h2>
+            <p className="text-gray-600">Which wash is best for your vehicle?</p>
+            {!selectedVehicle && (
+              <p className="text-blue-400 text-sm mt-2">Please select a vehicle type above first</p>
+            )}
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            {washPackages.map((pkg) => (
+              <div
+                key={pkg.id}
+                onClick={() => selectedVehicle && handlePackageSelect(pkg)}
+                className={`bg-white rounded-xl border-2 p-6 transition-all duration-300 transform ${!selectedVehicle
+                    ? 'opacity-50 cursor-not-allowed'
+                    : 'hover:shadow-xl cursor-pointer hover:scale-105'
+                  } ${selectedPackage?.id === pkg.id
+                    ? 'border-[#1393c4] bg-blue-50'
+                    : 'border-gray-200 hover:border-[#1393c4]'
                   }`}
-                >
-                  <div className="text-center mb-4">
-                    <h3 className="text-xl font-bold text-[#1393c4] mb-2">{pkg.name} ({pkg.duration})</h3>
-                    <div className="text-3xl font-bold text-[#1393c4] mb-2">
-                      {pkg.price}<span className="text-lg">.00 CAD</span>
-                    </div>
-                    {selectedPackage?.id === pkg.id && (
+              >
+                <div className="text-center mb-4">
+                  <h3 className="text-xl font-bold text-[#1393c4] mb-2">{pkg.name} ({pkg.duration})</h3>
+                  <div className={`text-3xl font-bold text-[#1393c4] mb-2 transition-all duration-500 ease-in-out ${priceAnimation ? 'transform scale-110 text-sky-400' : 'transform scale-100'
+                    }`}>
+                    <span className="inline-block">{pkg.price}</span><span className="text-lg">.00 CAD</span>
+                  </div>
+                  {selectedPackage?.id === pkg.id && selectedVehicle && (
+                    <div className="animate-bounce">
                       <Check className="w-6 h-6 text-[#1393c4] mx-auto" />
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    {pkg.features.map((feature, index) => (
-                      <p key={index} className="text-sm text-gray-600 leading-relaxed">
-                        {feature}
-                      </p>
-                    ))}
-                  </div>
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
+                <div className="space-y-2">
+                  {pkg.features.map((feature, index) => (
+                    <p key={index} className="text-sm text-gray-600 leading-relaxed">
+                      {feature}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
+        </div>
 
-          {/* Section 3: Add-ons */}
-          <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
+        {/* Section 3: Add-ons - Only show when package is selected */}
+        {selectedPackage && (
+          <div id="addons-section" className="bg-white rounded-xl shadow-lg p-8 border border-gray-200 mb-8">
             <div className="text-center mb-6">
               <h2 className="text-2xl sm:text-3xl font-bold text-[#1393c4] mb-4">3. ADD-ON OPTIONS</h2>
               <p className="text-gray-600">Add services to your package (optional).</p>
             </div>
             <div className="space-y-4">
-              {addOnOptions.map((addon) => (
+              {displayedAddOns.map((addon) => (
                 <div
                   key={addon.id}
                   className="flex flex-col sm:flex-row sm:items-center justify-between p-6 bg-white rounded-xl border-2 border-gray-200 hover:border-[#1393c4] transition-colors duration-300"
@@ -362,183 +452,236 @@ const BookingForm = () => {
                   </div>
                   <button
                     onClick={() => handleAddOnToggle(addon)}
-                    className={`px-6 py-2 rounded-full font-semibold transition-colors duration-300 ${
-                      selectedAddOns.find(item => item.id === addon.id)
+                    className={`px-6 py-2 rounded-full font-semibold transition-colors duration-300 ${selectedAddOns.find(item => item.id === addon.id)
                         ? 'bg-[#1393c4] text-white'
                         : 'border-2 border-[#1393c4] text-[#1393c4] hover:bg-[#1393c4] hover:text-white'
-                    }`}
+                      }`}
                   >
                     {selectedAddOns.find(item => item.id === addon.id) ? 'Selected' : 'Select'}
                   </button>
                 </div>
               ))}
-            </div>
-          </div>
-
-          {/* Section 4: Date & Time */}
-          <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
-            <div className="text-center mb-6">
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#1393c4] mb-4">4. SELECT DATE AND TIME</h2>
-              <p className="text-gray-600">Choose your preferred date and time.</p>
-            </div>
-
-            <div className="bg-gray-50 rounded-xl border-2 border-gray-200 p-6 max-w-4xl mx-auto">
-              <div className="flex items-center justify-between mb-6">
-                <div className="text-2xl font-semibold text-[#1393c4]">
-                  {months[currentMonth.getMonth()]} {currentMonth.getFullYear()}
-                </div>
-                <div className="flex space-x-2">
+              
+              {/* Show More/Less Button */}
+              {advancedAddOns.length > 0 && (
+                <div className="text-center pt-4">
                   <button
-                    onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}
-                    className="p-3 hover:bg-gray-100 rounded-lg text-[#1393c4] transition-colors duration-200"
+                    onClick={() => setShowAllAddOns(!showAllAddOns)}
+                    className="px-8 py-3 bg-gray-100 text-[#1393c4] border-2 border-[#1393c4] rounded-full font-semibold hover:bg-[#1393c4] hover:text-white transition-colors duration-300"
                   >
-                    <ChevronLeft className="w-5 h-5" />
+                    {showAllAddOns 
+                      ? `Show Less (Hide ${advancedAddOns.length} Paint Correction Options)` 
+                      : `Show More (+${advancedAddOns.length} Paint Correction Options)`
+                    }
                   </button>
-                  <button
-                    onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))}
-                    className="p-3 hover:bg-gray-100 rounded-lg text-[#1393c4] transition-colors duration-200"
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-7 gap-2 mb-4">
-                {daysOfWeek.map(day => (
-                  <div key={day} className="text-center text-sm font-medium text-[#1393c4] py-2 bg-gray-100 rounded">
-                    {day}
-                  </div>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-7 gap-2 mb-8">
-                {getDaysInMonth(currentMonth).map((day, index) => {
-                  const isSelected = selectedDate === `${months[currentMonth.getMonth()]} ${day}, ${currentMonth.getFullYear()}`;
-
-                  return (
-                    <button
-                      key={index}
-                      onClick={() => day && handleDateSelect(day)}
-                      disabled={!day || isPastDate(day)}
-                      className={`h-12 w-full rounded-lg text-sm font-medium transition-colors duration-200 ${
-                        !day
-                          ? 'cursor-default'
-                          : isPastDate(day)
-                          ? 'text-gray-300 cursor-not-allowed bg-gray-50'
-                          : isSelected
-                          ? 'bg-[#1393c4] text-white font-bold'
-                          : isToday(day)
-                          ? 'bg-blue-100 text-[#1393c4] border border-[#1393c4]'
-                          : 'hover:bg-blue-50 text-[#1393c4] border border-gray-200 hover:border-[#1393c4]'
-                      }`}
-                    >
-                      {day}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {selectedDate && (
-                <div className="border-t border-gray-200 pt-6">
-                  <div className="text-center mb-4">
-                    <p className="text-[#1393c4] font-semibold text-lg">Selected: {selectedDate}</p>
-                  </div>
-                  <h3 className="text-xl font-semibold text-[#1393c4] mb-4 text-center">Available Times</h3>
-                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-                    {timeSlots.map(time => (
-                      <button
-                        key={time}
-                        onClick={() => handleTimeSelect(time)}
-                        className={`py-3 px-4 text-sm font-medium rounded-lg border-2 transition-colors duration-200 ${
-                          selectedTime === time
-                            ? 'bg-[#1393c4] text-white border-[#1393c4]'
-                            : 'bg-white text-[#1393c4] border-[#1393c4] hover:bg-blue-50'
-                        }`}
-                      >
-                        {time}
-                      </button>
-                    ))}
-                  </div>
+                  {!showAllAddOns && (
+                    <p className="text-sm text-gray-500 mt-2">
+                      Click to view advanced paint correction services
+                    </p>
+                  )}
                 </div>
               )}
             </div>
           </div>
+        )}
 
-          {/* Section 5: Contact Information */}
-          <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
-            <div className="text-center mb-6">
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#1393c4] mb-4">5. CONTACT INFORMATION</h2>
-              <p className="text-gray-600">Please provide your contact details.</p>
+        {/* Section 4: Date & Time - Always shown */}
+        <div id="date-section" className="bg-white rounded-xl shadow-lg p-8 border border-gray-200 mb-8">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#1393c4] mb-4">
+              {selectedPackage ? '4' : '3'}. SELECT DATE AND TIME
+            </h2>
+            <p className="text-gray-600">Choose your preferred date and time.</p>
+            {!selectedPackage && (
+              <p className="text-blue-400 text-sm mt-2">Please select a package first</p>
+            )}
+          </div>
+
+          <div className={`bg-gray-50 rounded-xl border-2 border-gray-200 p-6 max-w-4xl mx-auto ${!selectedPackage ? 'opacity-50' : ''}`}>
+            <div className="flex items-center justify-between mb-6">
+              <div className="text-2xl font-semibold text-[#1393c4]">
+                {months[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+              </div>
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => selectedPackage && setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}
+                  disabled={!selectedPackage}
+                  className="p-3 hover:bg-gray-100 rounded-lg text-[#1393c4] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => selectedPackage && setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))}
+                  disabled={!selectedPackage}
+                  className="p-3 hover:bg-gray-100 rounded-lg text-[#1393c4] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-[#1393c4] mb-2">First name *</label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={bookingData.firstName}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent"
-                  required
-                />
+            <div className="grid grid-cols-7 gap-2 mb-4">
+              {daysOfWeek.map(day => (
+                <div key={day} className="text-center text-sm font-medium text-[#1393c4] py-2 bg-gray-100 rounded">
+                  {day}
+                </div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-7 gap-2 mb-8">
+              {getDaysInMonth(currentMonth).map((day, index) => {
+                const isSelected = selectedDate === `${months[currentMonth.getMonth()]} ${day}, ${currentMonth.getFullYear()}`;
+
+                return (
+                  <button
+                    key={index}
+                    onClick={() => day && selectedPackage && handleDateSelect(day)}
+                    disabled={!day || isPastDate(day) || !selectedPackage}
+                    className={`h-12 w-full rounded-lg text-sm font-medium transition-colors duration-200 ${!day
+                        ? 'cursor-default'
+                        : !selectedPackage || isPastDate(day)
+                          ? 'text-gray-300 cursor-not-allowed bg-gray-50'
+                          : isSelected
+                            ? 'bg-[#1393c4] text-white font-bold'
+                            : isToday(day)
+                              ? 'bg-blue-100 text-[#1393c4] border border-[#1393c4]'
+                              : 'hover:bg-blue-50 text-[#1393c4] border border-gray-200 hover:border-[#1393c4]'
+                      }`}
+                  >
+                    {day}
+                  </button>
+                );
+              })}
+            </div>
+
+            {selectedDate && selectedPackage && (
+              <div className="border-t border-gray-200 pt-6">
+                <div className="text-center mb-4">
+                  <p className="text-[#1393c4] font-semibold text-lg">Selected: {selectedDate}</p>
+                </div>
+                <h3 className="text-xl font-semibold text-[#1393c4] mb-4 text-center">Available Times</h3>
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+                  {timeSlots.map(time => (
+                    <button
+                      key={time}
+                      onClick={() => handleTimeSelect(time)}
+                      className={`py-3 px-4 text-sm font-medium rounded-lg border-2 transition-colors duration-200 ${selectedTime === time
+                          ? 'bg-[#1393c4] text-white border-[#1393c4]'
+                          : 'bg-white text-[#1393c4] border-[#1393c4] hover:bg-blue-50'
+                        }`}
+                    >
+                      {time}
+                    </button>
+                  ))}
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-[#1393c4] mb-2">Last name *</label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={bookingData.lastName}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#1393c4] mb-2">Email *</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={bookingData.email}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#1393c4] mb-2">Phone *</label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={bookingData.phone}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent"
-                  required
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-[#1393c4] mb-2">Vehicle Make and Model *</label>
-                <input
-                  type="text"
-                  name="vehicleMake"
-                  value={bookingData.vehicleMake}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent"
-                  required
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-[#1393c4] mb-2">Message</label>
-                <textarea
-                  name="message"
-                  value={bookingData.message}
-                  onChange={handleInputChange}
-                  rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent resize-none"
-                />
-              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Section 5: Contact Information - Always shown */}
+        <div id="contact-section" className="bg-white rounded-xl shadow-lg p-8 border border-gray-200 mb-8">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#1393c4] mb-4">
+              {selectedPackage ? '5' : '4'}. CONTACT INFORMATION
+            </h2>
+            <p className="text-gray-600">Please provide your contact details.</p>
+            {(!selectedDate || !selectedTime) && (
+              <p className="text-blue-400 text-sm mt-2">Please select date and time first</p>
+            )}
+          </div>
+
+          <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 ${(!selectedDate || !selectedTime) ? 'opacity-50' : ''}`}>
+            <div>
+              <label className="block text-sm font-medium text-[#1393c4] mb-2">First name *</label>
+              <input
+                type="text"
+                name="firstName"
+                value={bookingData.firstName}
+                onChange={handleInputChange}
+                disabled={!selectedDate || !selectedTime}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[#1393c4] mb-2">Last name *</label>
+              <input
+                type="text"
+                name="lastName"
+                value={bookingData.lastName}
+                onChange={handleInputChange}
+                disabled={!selectedDate || !selectedTime}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[#1393c4] mb-2">Email *</label>
+              <input
+                type="email"
+                name="email"
+                value={bookingData.email}
+                onChange={handleInputChange}
+                disabled={!selectedDate || !selectedTime}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[#1393c4] mb-2">Phone *</label>
+              <input
+                type="tel"
+                name="phone"
+                value={bookingData.phone}
+                onChange={handleInputChange}
+                disabled={!selectedDate || !selectedTime}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+                required
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-[#1393c4] mb-2">Vehicle Make and Model *</label>
+              <input
+                type="text"
+                name="vehicleMake"
+                value={bookingData.vehicleMake}
+                onChange={handleInputChange}
+                disabled={!selectedDate || !selectedTime}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+                required
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-[#1393c4] mb-2">Message</label>
+              <textarea
+                name="message"
+                value={bookingData.message}
+                onChange={handleInputChange}
+                disabled={!selectedDate || !selectedTime}
+                rows={4}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent resize-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+              />
             </div>
           </div>
+
+          {(selectedDate && selectedTime) && (
+            <div className="mt-8">
+              <button
+                onClick={() => {
+                  setSelectedDate('');
+                  setSelectedTime('');
+                  const dateSection = document.getElementById('date-section');
+                  if (dateSection) {
+                    dateSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
+                className="px-6 py-2 bg-gray-500 text-white rounded-full font-semibold hover:bg-gray-600 transition-colors duration-300"
+              >
+                Previous
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Submit Button */}
@@ -549,11 +692,10 @@ const BookingForm = () => {
           <button
             onClick={handleSubmit}
             disabled={!isFormValid()}
-            className={`px-12 py-4 rounded-full font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl ${
-              isFormValid()
+            className={`px-12 py-4 rounded-full font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl ${isFormValid()
                 ? 'bg-[#1393c4] hover:bg-[#0d7aa1] text-white'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            }`}
+              }`}
           >
             Confirm Booking
           </button>
