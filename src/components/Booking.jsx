@@ -117,6 +117,27 @@ const BookingForm = () => {
       description: 'As per estimate'
     },
     { 
+      id: 'headliner-shampoo', 
+      name: 'Headliner shampoo (1 Hour)', 
+      price: 30, 
+      duration: '60min',
+      description: 'Complete cleaning of headliners.'
+    },
+    { 
+      id: 'carnauba-wax', 
+      name: 'Carnauba wax (4 months protection) (30 min)', 
+      price: 40, 
+      duration: '30min',
+      description: 'The carnauba wax repels water and, consequently, most contaminants. When applied to paint surface, carnauba retains these characteristics. Therefore, an application of a carnauba-based car wax to your vehicle will protect it from UV rays, heat, moisture, oxidation, and environmental contamination.'
+    },
+    { 
+      id: 'engine-shampoo', 
+      name: 'Engine shampoo (40 min)', 
+      price: 60, 
+      duration: '40min',
+      description: 'Engine Degreased, rinsed, steam cleaned and dressed.'
+    },
+    { 
       id: 'headlight', 
       name: 'Headlights Restoration (30 min)', 
       price: 80, 
@@ -129,6 +150,20 @@ const BookingForm = () => {
       price: 80, 
       duration: '180min',
       description: 'We use Ozone treatment for Odour elimination. Ozone treatment is the use of the ozone (O3) to remove odour, bacteria and viruses. Ozone treatment is the best method for removing stubborn odour.'
+    },
+    { 
+      id: 'paint-sealant', 
+      name: 'Paint sealant (6 months protection) (40 min)', 
+      price: 50, 
+      duration: '40min',
+      description: 'Paint sealant is a fully synthetic product designed to protect paint surfaces while providing a mirror-like shine. A sealant is chemically engineered to bond to the surface, it will last longer than traditional wax while providing protection against paint-killer like sap, acid rain and UV rays.'
+    },
+    { 
+      id: 'paint-decontamination', 
+      name: 'Paint Decontamination (20 minutes)', 
+      price: 30, 
+      duration: '20min',
+      description: 'Removing iron deposits and road dust'
     },
     { 
       id: 'fabric', 
@@ -153,31 +188,95 @@ const BookingForm = () => {
     },
     { 
       id: 'paint-correction-2', 
-      name: 'Paint correction (Two stage) (180 min)', 
-      price: 200, 
-      duration: '180min',
+      name: 'Paint correction (Two stage) (60 min)', 
+      price: 300, 
+      duration: '60min',
       description: 'This process involve light compounding machine polishing steps to remove the worst defects, swirl marks, oxidation, and then followed by a polishing stage to refine the finish and improve the gloss and clarity. The paint type and condition also dictate the level of correction, but typically this service will get rid of 60%-70% of all defects'
     },
     { 
       id: 'paint-correction-3', 
-      name: 'Paint correction (Three stage) (240 min)', 
+      name: 'Paint correction (Three stage) (120 min)', 
       price: 450, 
-      duration: '240min',
+      duration: '120min',
       description: 'This process involve medium and light compounding machine polishing steps to remove the worst defects, swirl marks, oxidation, and then followed by a polishing stage to refine the finish and improve the gloss and clarity. The paint type and condition also dictate the level of correction, but typically this service will get rid of 70%-80% of all defects'
     },
     { 
       id: 'paint-correction-4', 
-      name: 'Paint correction (Four stage) (300 min)', 
+      name: 'Paint correction (Four stage) (240 min)', 
       price: 600, 
-      duration: '300min',
+      duration: '240min',
       description: 'With multi stage paint correction, you\'re significantly improving the finish by removing all of the swirls, and all but the heaviest of scratches and defects. Depend on the condition of the paint we may have to wet-sand to remove deep scratches and orange peel. This process involve 3 or more heavy compounding machine polishing steps to remove the worst defects, swirl marks, oxidation, and then followed by a polishing stage to refine the finish and improve the gloss and clarity. The paint type and condition also dictate the level of correction, but typically this service will get rid of 80-90% of all defects.'
     }
   ];
 
-  // Split add-ons into basic and advanced
-  const basicAddOns = addOnOptions.slice(0, 5); // First 5 options
-  const advancedAddOns = addOnOptions.slice(5); // Paint correction options
-  const displayedAddOns = showAllAddOns ? addOnOptions : basicAddOns;
+  // Filter add-ons based on selected package
+  const getAvailableAddOns = () => {
+    if (!selectedPackage) return [];
+    
+    // Define add-ons for Silver package (13 options) - All add-ons
+    const silverPackageAddOns = [
+      'pet-removal',
+      'headliner-shampoo',
+      'carnauba-wax',
+      'engine-shampoo',
+      'headlight',
+      'odor',
+      'paint-sealant',
+      'paint-decontamination',
+      'fabric',
+      'decontamination',
+      'paint-correction-1',
+      'paint-correction-2',
+      'paint-correction-3'
+    ];
+    
+    // Define add-ons for Gold package (9 options)
+    const goldPackageAddOns = [
+      'pet-removal',
+      'headlight', 
+      'odor',
+      'fabric',
+      'decontamination',
+      'paint-correction-1',
+      'paint-correction-2',
+      'paint-correction-3',
+      'paint-correction-4'
+    ];
+    
+    // Define add-ons for Diamond package (7 options)
+    const diamondPackageAddOns = [
+      'pet-removal',
+      'headlight',
+      'odor',
+      'fabric',
+      'paint-correction-2',
+      'paint-correction-3',
+      'paint-correction-4'
+    ];
+    
+    // Filter based on selected package
+    if (selectedPackage.name === 'Silver Package') {
+      return addOnOptions.filter(addon => silverPackageAddOns.includes(addon.id));
+    }
+    
+    if (selectedPackage.name === 'Gold Package') {
+      return addOnOptions.filter(addon => goldPackageAddOns.includes(addon.id));
+    }
+    
+    if (selectedPackage.name === 'Diamond Package') {
+      return addOnOptions.filter(addon => diamondPackageAddOns.includes(addon.id));
+    }
+    
+    // Fallback - show all add-ons
+    return addOnOptions;
+  };
+
+  const availableAddOns = getAvailableAddOns();
+  
+  // Split available add-ons into basic and advanced
+  const basicAddOns = availableAddOns.filter(addon => !addon.id.includes('paint-correction'));
+  const advancedAddOns = availableAddOns.filter(addon => addon.id.includes('paint-correction'));
+  const displayedAddOns = showAllAddOns ? availableAddOns : basicAddOns;
 
   const timeSlots = [
     '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
