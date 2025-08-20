@@ -89,7 +89,7 @@ const ChooseYourService = ({ setCurrentView }) => {
       video.style.perspective = '1000px';
       video.style.transformStyle = 'preserve-3d';
       
-      // iPad-specific video adjustments (from Hero)
+      // Enhanced video adjustments for iPhone and iPad
       const adjustVideoFit = () => {
         const width = window.innerWidth;
         const height = window.innerHeight;
@@ -108,6 +108,9 @@ const ChooseYourService = ({ setCurrentView }) => {
            (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document))
         );
         
+        // Detect iPhone devices
+        const isIPhone = /iPhone/i.test(navigator.userAgent);
+        
         // Calculate aspect ratios
         const screenRatio = width / height;
         const videoRatio = 16 / 9;
@@ -121,8 +124,35 @@ const ChooseYourService = ({ setCurrentView }) => {
         video.style.left = '0';
         video.style.transform = 'translateZ(0)';
         
+        // iPhone-specific optimizations
+        if (isIPhone) {
+          // iPhone 14/15/16 series specific positioning
+          if (
+            (width === 430 && height === 932) ||  // Pro Max
+            (width === 428 && height === 926) ||  // Plus
+            (width === 393 && height === 852) ||  // Pro
+            (width === 390 && height === 844) ||  // Standard
+            (height === 430 && width === 932) ||  // Landscape orientations
+            (height === 428 && width === 926) ||
+            (height === 393 && width === 852) ||
+            (height === 390 && width === 844)
+          ) {
+            video.style.objectPosition = 'center center';
+            video.style.objectFit = 'cover';
+            // Ensure proper scaling for modal
+            video.style.minWidth = '100%';
+            video.style.minHeight = '100%';
+            video.style.maxWidth = 'none';
+            video.style.maxHeight = 'none';
+          }
+          // Other iPhone models
+          else {
+            video.style.objectPosition = 'center center';
+            video.style.objectFit = 'cover';
+          }
+        }
         // iPad-specific positioning
-        if (isIPad) {
+        else if (isIPad) {
           video.style.objectPosition = 'center center';
           video.style.minWidth = '100%';
           video.style.minHeight = '100%';
@@ -190,7 +220,7 @@ const ChooseYourService = ({ setCurrentView }) => {
     }
   }, [isModalOpen, selectedService]);
 
-  // Get container height function (from Hero)
+  // Get container height function (from Hero) - Enhanced for iPhone models
   const getVideoContainerHeight = () => {
     if (typeof window === 'undefined') return '320px'; // Default for modal
     
@@ -211,8 +241,65 @@ const ChooseYourService = ({ setCurrentView }) => {
        (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document))
     );
     
-    // Mobile phones (portrait)
-    if (width < 768) {
+    // Specific iPhone model detection and sizing
+    const isIPhone = /iPhone/i.test(navigator.userAgent);
+    
+    // iPhone specific sizing based on models
+    if (isIPhone) {
+      // iPhone 14, 15, 16 series detection by screen dimensions
+      if (
+        // iPhone 14/15/16 Pro Max: 430x932
+        (width === 430 && height === 932) ||
+        // iPhone 14/15/16 Plus: 428x926  
+        (width === 428 && height === 926) ||
+        // iPhone 14/15/16 Pro: 393x852
+        (width === 393 && height === 852) ||
+        // iPhone 14/15/16: 390x844
+        (width === 390 && height === 844) ||
+        // Landscape orientations
+        (height === 430 && width === 932) ||
+        (height === 428 && width === 926) ||
+        (height === 393 && width === 852) ||
+        (height === 390 && width === 844)
+      ) {
+        // For newer iPhones, use optimized modal sizing
+        return width < height ? 
+          Math.min(height * 0.35, 280) : // Portrait: 35% of height, max 280px
+          Math.min(width * 0.4, 320);    // Landscape: 40% of width, max 320px
+      }
+      
+      // iPhone 13 series and older
+      else if (
+        // iPhone 13 Pro Max: 428x926
+        (width === 428 && height === 926) ||
+        // iPhone 13/13 Pro: 390x844
+        (width === 390 && height === 844) ||
+        // iPhone 13 mini: 375x812
+        (width === 375 && height === 812) ||
+        // iPhone 12 series: similar dimensions
+        (width === 414 && height === 896) ||
+        (width === 375 && height >= 667) ||
+        // Landscape orientations
+        (height === 428 && width === 926) ||
+        (height === 390 && width === 844) ||
+        (height === 375 && width === 812) ||
+        (height === 414 && width === 896)
+      ) {
+        return width < height ? 
+          Math.min(height * 0.35, 270) : // Portrait: 35% of height, max 270px
+          Math.min(width * 0.4, 300);    // Landscape: 40% of width, max 300px
+      }
+      
+      // Fallback for other iPhone models
+      else {
+        return width < height ? 
+          Math.min(height * 0.3, 250) :  // Portrait: 30% of height, max 250px
+          Math.min(width * 0.35, 280);   // Landscape: 35% of width, max 280px
+      }
+    }
+    
+    // General mobile phones (non-iPhone)
+    else if (width < 768) {
       return Math.min(height * 0.4, 300); // Smaller for modal
     }
     // iPad specific handling
@@ -435,7 +522,9 @@ const ChooseYourService = ({ setCurrentView }) => {
               className="relative bg-gray-100 overflow-hidden"
               style={{ 
                 height: getVideoContainerHeight(),
-                minHeight: isSmallScreen ? '200px' : '250px'
+                minHeight: isSmallScreen ? '200px' : '250px',
+                // Additional iPhone optimizations
+                maxHeight: /iPhone/i.test(navigator.userAgent) ? '300px' : 'none'
               }}
             >
               <video
