@@ -18,11 +18,11 @@ import wash2 from '../assets/images/wash2.png';
 import beforeAfterImage from '../assets/images/before-and-after-dent-repair.png';
 
 // Import custom auto detailing assets
-import autoDetailingVideo from '../assets/images/Auto Detailing final.mp4';
+import autoDetailingVideo from '../assets/images/Auto detailing Service page.mp4';
 import autoDetailingImage from '../assets/images/autodetailing.png';
 
 // Import custom paint correction assets
-import paintCorrectionVideo from '../assets/images/PaintcorrectionHomepage.mp4';
+import paintCorrectionVideo from '../assets/images/Paint Correction Polishing (1).mp4';
 import paintCorrectionImage from '../assets/images/paint correction polishing.png';
 
 // Import custom window tinting assets
@@ -30,10 +30,10 @@ import windowTintingVideo from '../assets/images/WindowtintHomepage.mp4';
 import windowTintingImage from '../assets/images/windowtint.png';
 
 // Import custom ceramic coating assets
-import ceramicCoatingVideo from '../assets/images/CeramicCoatingHomepage.mp4';
+import ceramicCoatingVideo from '../assets/images/Ceramic Coating Home page.mp4';
 
 // Import custom paint protection film assets
-import paintProtectionVideo from '../assets/images/PPFHomepage.mp4';
+import paintProtectionVideo from '../assets/images/PPF Home page.mp4';
 
 // Import custom dent repair assets
 import dentRepairVideo from '../assets/images/Dent Repair.mp4';
@@ -245,7 +245,7 @@ const ChooseYourService = ({ setCurrentView }) => {
           
           <div className="relative bg-white rounded-2xl max-w-2xl w-full mx-auto overflow-hidden shadow-2xl">
             {/* Video Section - Fixed for laptop autoplay */}
-            <div className="relative h-64 bg-gray-100">
+            <div className="relative h-80 bg-gray-100">
               <video
                 key={selectedService.title}
                 className="w-full h-full object-cover"
