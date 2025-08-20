@@ -10,6 +10,7 @@ const BookingForm = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [priceAnimation, setPriceAnimation] = useState(false);
   const [showAllAddOns, setShowAllAddOns] = useState(false);
+  const [expandedDescriptions, setExpandedDescriptions] = useState({});
   const [bookingData, setBookingData] = useState({
     firstName: '',
     lastName: '',
@@ -108,17 +109,72 @@ const BookingForm = () => {
   };
 
   const addOnOptions = [
-    { id: 'pet-removal', name: 'Pet hairs removal', price: 0, duration: '30min' },
-    { id: 'headlight', name: 'Headlights Restoration (30 min)', price: 80, duration: '30min' },
-    { id: 'odor', name: 'Odor Elimination and sanitization (180 min)', price: 80, duration: '180min' },
-    { id: 'fabric', name: 'Fabric protector (carpet and seats) (40 min)', price: 80, duration: '40min' },
-    { id: 'decontamination', name: 'Decontamination Wash (30 min)', price: 30, duration: '30min' },
-    { id: 'paint-correction-1', name: 'Paint correction (One stage) (2 Hours)', price: 150, duration: '2hr' },
-    { id: 'paint-correction-2', name: 'Paint correction (Two stage) (180 min)', price: 200, duration: '180min' },
-    { id: 'paint-correction-3', name: 'Paint correction (Three stage) (240 min)', price: 450, duration: '240min' },
-    { id: 'paint-correction-4', name: 'Paint correction (Four stage) (300 min)', price: 600, duration: '300min' }
+    { 
+      id: 'pet-removal', 
+      name: 'Pet hairs removal', 
+      price: 0, 
+      duration: '30min',
+      description: 'As per estimate'
+    },
+    { 
+      id: 'headlight', 
+      name: 'Headlights Restoration (30 min)', 
+      price: 80, 
+      duration: '30min',
+      description: 'Headlight restoration removes dull, yellowed headlight build up. We clean and restore your headlights with our dry sanding, wet sanding, polishing techniques for maximum visibility. We seal the headlight for long lasting protection.'
+    },
+    { 
+      id: 'odor', 
+      name: 'Odor Elimination and sanitization (180 min)', 
+      price: 80, 
+      duration: '180min',
+      description: 'We use Ozone treatment for Odour elimination. Ozone treatment is the use of the ozone (O3) to remove odour, bacteria and viruses. Ozone treatment is the best method for removing stubborn odour.'
+    },
+    { 
+      id: 'fabric', 
+      name: 'Fabric protector (carpet and seats) (40 min)', 
+      price: 80, 
+      duration: '40min',
+      description: '3M scotchgard coating protects fibers and prevents stains from penetrating into fabric. Fabric protector repels oil, water and alcohol. Fabric protector bonds to individual fibers and forms a barrier against all contaminants. 3M Scotchgard fabric protection is a long-lasting stain resistant coating which will protect your interior detailing job for months.'
+    },
+    { 
+      id: 'decontamination', 
+      name: 'Decontamination Wash (30 min)', 
+      price: 30, 
+      duration: '30min',
+      description: 'Deep cleaning wash to remove contaminants and prepare the vehicle surface.'
+    },
+    { 
+      id: 'paint-correction-1', 
+      name: 'Paint correction (One stage) (2 Hours)', 
+      price: 150, 
+      duration: '2hr',
+      description: 'This service is designed for vehicles that are looking for paint refinement rather than paint perfection. A vehicle that is in great shape already and only requires one stage polishing step to remove minor wash marks and light swirls Or for the customer who wants to enhance the gloss of their paint work, but less concerned with getting every scratch and swirl removed. One stage enhancement polish is a great cost-effective alternative to multi stage correction. We can usually remove 50% of swirls, and light defects. There are different variables that can dictate just how much correction you can safely achieve in a One stage correction process.'
+    },
+    { 
+      id: 'paint-correction-2', 
+      name: 'Paint correction (Two stage) (180 min)', 
+      price: 200, 
+      duration: '180min',
+      description: 'This process involve light compounding machine polishing steps to remove the worst defects, swirl marks, oxidation, and then followed by a polishing stage to refine the finish and improve the gloss and clarity. The paint type and condition also dictate the level of correction, but typically this service will get rid of 60%-70% of all defects'
+    },
+    { 
+      id: 'paint-correction-3', 
+      name: 'Paint correction (Three stage) (240 min)', 
+      price: 450, 
+      duration: '240min',
+      description: 'This process involve medium and light compounding machine polishing steps to remove the worst defects, swirl marks, oxidation, and then followed by a polishing stage to refine the finish and improve the gloss and clarity. The paint type and condition also dictate the level of correction, but typically this service will get rid of 70%-80% of all defects'
+    },
+    { 
+      id: 'paint-correction-4', 
+      name: 'Paint correction (Four stage) (300 min)', 
+      price: 600, 
+      duration: '300min',
+      description: 'With multi stage paint correction, you\'re significantly improving the finish by removing all of the swirls, and all but the heaviest of scratches and defects. Depend on the condition of the paint we may have to wet-sand to remove deep scratches and orange peel. This process involve 3 or more heavy compounding machine polishing steps to remove the worst defects, swirl marks, oxidation, and then followed by a polishing stage to refine the finish and improve the gloss and clarity. The paint type and condition also dictate the level of correction, but typically this service will get rid of 80-90% of all defects.'
+    }
   ];
 
+  // Split add-ons into basic and advanced
   const basicAddOns = addOnOptions.slice(0, 5); // First 5 options
   const advancedAddOns = addOnOptions.slice(5); // Paint correction options
   const displayedAddOns = showAllAddOns ? addOnOptions : basicAddOns;
@@ -228,6 +284,13 @@ const BookingForm = () => {
         dateSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }, 300);
+  };
+
+  const toggleDescription = (addonId) => {
+    setExpandedDescriptions(prev => ({
+      ...prev,
+      [addonId]: !prev[addonId]
+    }));
   };
 
   const handleDateSelect = (day) => {
@@ -350,7 +413,7 @@ const BookingForm = () => {
         <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200 mb-8">
           <div className="text-center mb-6">
             <h2 className="text-2xl sm:text-3xl font-bold text-[#1393c4] mb-4">1. VEHICLE TYPE</h2>
-            <p className="text-gray-600">Select your vehicle type below.</p>
+            <p className="text-[#1393c4]">Select your vehicle type below.</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {vehicleTypes.map((vehicle) => {
@@ -383,7 +446,7 @@ const BookingForm = () => {
         <div id="packages-section" className="bg-white rounded-xl shadow-lg p-8 border border-gray-200 mb-8">
           <div className="text-center mb-6">
             <h2 className="text-2xl sm:text-3xl font-bold text-[#1393c4] mb-4">2. WASH PACKAGES</h2>
-            <p className="text-gray-600">Which wash is best for your vehicle?</p>
+            <p className="text-[#1393c4]">Which wash is best for your vehicle?</p>
             {!selectedVehicle && (
               <p className="text-blue-400 text-sm mt-2">Please select a vehicle type above first</p>
             )}
@@ -415,7 +478,7 @@ const BookingForm = () => {
                 </div>
                 <div className="space-y-2">
                   {pkg.features.map((feature, index) => (
-                    <p key={index} className="text-sm text-gray-600 leading-relaxed">
+                    <p key={index} className="text-sm text-[#1393c4] leading-relaxed">
                       {feature}
                     </p>
                   ))}
@@ -430,52 +493,79 @@ const BookingForm = () => {
           <div id="addons-section" className="bg-white rounded-xl shadow-lg p-8 border border-gray-200 mb-8">
             <div className="text-center mb-6">
               <h2 className="text-2xl sm:text-3xl font-bold text-[#1393c4] mb-4">3. ADD-ON OPTIONS</h2>
-              <p className="text-gray-600">Add services to your package (optional).</p>
+              <p className="text-[#1393c4]">Add services to your package (optional).</p>
             </div>
             <div className="space-y-4">
               {displayedAddOns.map((addon) => (
                 <div
                   key={addon.id}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between p-6 bg-white rounded-xl border-2 border-gray-200 hover:border-[#1393c4] transition-colors duration-300"
+                  className="bg-white rounded-xl border-2 border-gray-200 hover:border-[#1393c4] transition-colors duration-300 overflow-hidden"
                 >
-                  <div className="flex-1 mb-3 sm:mb-0">
-                    <h3 className="font-semibold text-[#1393c4] text-lg mb-1">{addon.name}</h3>
-                    <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
-                      <span className="flex items-center">
-                        <Clock className="w-4 h-4 mr-1" />
-                        {addon.duration}
-                      </span>
-                      <span className="font-semibold text-[#1393c4]">
-                        {addon.price === 0 ? '0.00 CAD' : `${addon.price}.00 CAD`}
-                      </span>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between p-6">
+                    <div className="flex-1 mb-3 sm:mb-0">
+                      <h3 className="font-semibold text-[#1393c4] text-lg mb-1">{addon.name}</h3>
+                      <div className="flex flex-wrap items-center gap-4 text-sm text-[#1393c4] mb-2">
+                        <span className="flex items-center">
+                          <Clock className="w-4 h-4 mr-1" />
+                          {addon.duration}
+                        </span>
+                        <span className="font-semibold text-[#1393c4]">
+                          {addon.price === 0 ? '0.00 CAD' : `${addon.price}.00 CAD`}
+                        </span>
+                      </div>
+                      {addon.id === 'pet-removal' && expandedDescriptions[addon.id] && (
+                        <p className="text-red-500 text-sm font-medium mb-2">As per estimate</p>
+                      )}
+                      {addon.description && (
+                        <div className="mt-2">
+                          {expandedDescriptions[addon.id] ? (
+                            <div>
+                              <p className="text-sm text-[#1393c4] leading-relaxed">{addon.description}</p>
+                              <button
+                                onClick={() => toggleDescription(addon.id)}
+                                className="text-[#1393c4] text-sm font-medium hover:underline mt-1"
+                              >
+                                Less...
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => toggleDescription(addon.id)}
+                              className="text-[#1393c4] text-sm font-medium hover:underline"
+                            >
+                              More...
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </div>
+                    <button
+                      onClick={() => handleAddOnToggle(addon)}
+                      className={`px-6 py-2 rounded-full font-semibold transition-colors duration-300 whitespace-nowrap ${selectedAddOns.find(item => item.id === addon.id)
+                          ? 'bg-[#1393c4] text-white'
+                          : 'border-2 border-[#1393c4] text-[#1393c4] hover:bg-[#1393c4] hover:text-white'
+                        }`}
+                    >
+                      {selectedAddOns.find(item => item.id === addon.id) ? 'Selected' : 'Select'}
+                    </button>
                   </div>
-                  <button
-                    onClick={() => handleAddOnToggle(addon)}
-                    className={`px-6 py-2 rounded-full font-semibold transition-colors duration-300 ${selectedAddOns.find(item => item.id === addon.id)
-                        ? 'bg-[#1393c4] text-white'
-                        : 'border-2 border-[#1393c4] text-[#1393c4] hover:bg-[#1393c4] hover:text-white'
-                      }`}
-                  >
-                    {selectedAddOns.find(item => item.id === addon.id) ? 'Selected' : 'Select'}
-                  </button>
                 </div>
               ))}
               
               {/* Show More/Less Button */}
               {advancedAddOns.length > 0 && (
-                <div className="text-center pt-4">
+                <div className="text-center pt-6">
                   <button
                     onClick={() => setShowAllAddOns(!showAllAddOns)}
                     className="px-8 py-3 bg-gray-100 text-[#1393c4] border-2 border-[#1393c4] rounded-full font-semibold hover:bg-[#1393c4] hover:text-white transition-colors duration-300"
                   >
                     {showAllAddOns 
-                      ? `Show Less (Hide ${advancedAddOns.length} Paint Correction Options)` 
-                      : `Show More (+${advancedAddOns.length} Paint Correction Options)`
+                      ? `Less... (Hide ${advancedAddOns.length} Paint Correction Options)` 
+                      : `More... (+${advancedAddOns.length} Paint Correction Options)`
                     }
                   </button>
                   {!showAllAddOns && (
-                    <p className="text-sm text-gray-500 mt-2">
+                    <p className="text-sm text-[#1393c4] mt-2">
                       Click to view advanced paint correction services
                     </p>
                   )}
@@ -491,7 +581,7 @@ const BookingForm = () => {
             <h2 className="text-2xl sm:text-3xl font-bold text-[#1393c4] mb-4">
               {selectedPackage ? '4' : '3'}. SELECT DATE AND TIME
             </h2>
-            <p className="text-gray-600">Choose your preferred date and time.</p>
+            <p className="text-[#1393c4]">Choose your preferred date and time.</p>
             {!selectedPackage && (
               <p className="text-blue-400 text-sm mt-2">Please select a package first</p>
             )}
@@ -585,7 +675,7 @@ const BookingForm = () => {
             <h2 className="text-2xl sm:text-3xl font-bold text-[#1393c4] mb-4">
               {selectedPackage ? '5' : '4'}. CONTACT INFORMATION
             </h2>
-            <p className="text-gray-600">Please provide your contact details.</p>
+            <p className="text-[#1393c4]">Please provide your contact details.</p>
             {(!selectedDate || !selectedTime) && (
               <p className="text-blue-400 text-sm mt-2">Please select date and time first</p>
             )}
@@ -686,7 +776,7 @@ const BookingForm = () => {
 
         {/* Submit Button */}
         <div className="text-center mt-12">
-          <p className="text-sm text-gray-600 mb-4 leading-relaxed">
+          <p className="text-sm text-[#1393c4] mb-4 leading-relaxed">
             We will confirm your appointment within 24 hours.
           </p>
           <button
