@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 // Import FontAwesome components
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -42,6 +42,192 @@ import dentRepairImage from '../assets/images/dent repair.png';
 const ChooseYourService = ({ setCurrentView }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const videoRef = useRef(null);
+
+  // Check screen size and setup video handling like Hero component
+  useEffect(() => {
+    const checkScreenSize = () => {
+      const width = window.innerWidth;
+      const isIPad = (
+        (width === 768) || (width === 820) || (width === 834) || (width === 1024) ||
+        navigator.userAgent.includes('iPad') || 
+        (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document)
+      );
+      setIsSmallScreen(width < 768 && !isIPad);
+    };
+    
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => {
+      window.removeEventListener('resize', checkScreenSize);
+    };
+  }, []);
+
+  // Video setup effect for modal videos
+  useEffect(() => {
+    if (isModalOpen && videoRef.current) {
+      const video = videoRef.current;
+      
+      // Essential settings for smooth playback (from Hero)
+      video.muted = true;
+      video.defaultMuted = true;
+      video.volume = 0;
+      video.setAttribute('playsinline', 'true');
+      video.setAttribute('webkit-playsinline', 'true');
+      
+      // Performance optimizations (from Hero)
+      video.preload = 'auto';
+      video.poster = '';
+      video.loading = 'eager';
+      video.crossOrigin = 'anonymous';
+      
+      // Force browser optimization (from Hero)
+      video.style.willChange = 'auto';
+      video.style.backfaceVisibility = 'hidden';
+      video.style.perspective = '1000px';
+      video.style.transformStyle = 'preserve-3d';
+      
+      // iPad-specific video adjustments (from Hero)
+      const adjustVideoFit = () => {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        
+        // Detect iPad devices
+        const isIPad = (
+          (width === 768 && height === 1024) ||
+          (width === 820 && height === 1180) ||
+          (width === 834 && height === 1194) ||
+          (width === 1024 && height === 1366) ||
+          (height === 768 && width === 1024) ||
+          (height === 820 && width === 1180) ||
+          (height === 834 && width === 1194) ||
+          (height === 1024 && width === 1366) ||
+          (navigator.userAgent.includes('iPad') || 
+           (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document))
+        );
+        
+        // Calculate aspect ratios
+        const screenRatio = width / height;
+        const videoRatio = 16 / 9;
+        
+        // Base styles for all devices
+        video.style.objectFit = 'cover';
+        video.style.width = '100%';
+        video.style.height = '100%';
+        video.style.position = 'absolute';
+        video.style.top = '0';
+        video.style.left = '0';
+        video.style.transform = 'translateZ(0)';
+        
+        // iPad-specific positioning
+        if (isIPad) {
+          video.style.objectPosition = 'center center';
+          video.style.minWidth = '100%';
+          video.style.minHeight = '100%';
+        }
+        // Other devices
+        else if (screenRatio > videoRatio) {
+          video.style.objectPosition = 'center center';
+        } else {
+          video.style.objectPosition = 'center 40%';
+        }
+      };
+      
+      adjustVideoFit();
+      
+      // Force video load and play (from Hero)
+      const forceVideoLoad = () => {
+        return new Promise((resolve) => {
+          if (video.readyState === 4) {
+            resolve();
+            return;
+          }
+          
+          const checkLoad = () => {
+            if (video.readyState === 4) {
+              resolve();
+            } else {
+              setTimeout(checkLoad, 50);
+            }
+          };
+          
+          video.addEventListener('canplaythrough', resolve, { once: true });
+          video.addEventListener('loadeddata', checkLoad, { once: true });
+          
+          video.load();
+        });
+      };
+      
+      const playVideo = async () => {
+        try {
+          await forceVideoLoad();
+          await new Promise(resolve => setTimeout(resolve, 200));
+          await video.play();
+        } catch (error) {
+          console.log('Initial autoplay failed, setting up user interaction');
+          
+          const enableVideo = async () => {
+            try {
+              await forceVideoLoad();
+              await video.play();
+              document.removeEventListener('click', enableVideo);
+              document.removeEventListener('touchstart', enableVideo);
+              document.removeEventListener('scroll', enableVideo);
+            } catch (err) {
+              console.log('Video play failed:', err);
+            }
+          };
+          
+          document.addEventListener('click', enableVideo, { once: true });
+          document.addEventListener('touchstart', enableVideo, { once: true });
+          document.addEventListener('scroll', enableVideo, { once: true });
+        }
+      };
+      
+      setTimeout(playVideo, 1000);
+    }
+  }, [isModalOpen, selectedService]);
+
+  // Get container height function (from Hero)
+  const getVideoContainerHeight = () => {
+    if (typeof window === 'undefined') return '320px'; // Default for modal
+    
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    
+    // Detect iPad devices
+    const isIPad = (
+      (width === 768 && height === 1024) ||
+      (width === 820 && height === 1180) ||
+      (width === 834 && height === 1194) ||
+      (width === 1024 && height === 1366) ||
+      (height === 768 && width === 1024) ||
+      (height === 820 && width === 1180) ||
+      (height === 834 && width === 1194) ||
+      (height === 1024 && width === 1366) ||
+      (navigator.userAgent.includes('iPad') || 
+       (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document))
+    );
+    
+    // Mobile phones (portrait)
+    if (width < 768) {
+      return Math.min(height * 0.4, 300); // Smaller for modal
+    }
+    // iPad specific handling
+    else if (isIPad) {
+      return Math.min(width * 0.4, height * 0.4); // Smaller for modal
+    }
+    // Other tablets and small laptops
+    else if (width < 1024) {
+      return Math.min(height * 0.5, 400); // Smaller for modal
+    }
+    // Desktop
+    else {
+      return '320px'; // Fixed height for desktop modal
+    }
+  };
 
   // Simple service data
   const servicesData = {
@@ -244,19 +430,45 @@ const ChooseYourService = ({ setCurrentView }) => {
           <div className="absolute inset-0 bg-black/80" onClick={closeModal}></div>
           
           <div className="relative bg-white rounded-2xl max-w-2xl w-full mx-auto overflow-hidden shadow-2xl">
-            {/* Video Section - Fixed for laptop autoplay */}
-            <div className="relative h-80 bg-gray-100">
+            {/* Video Section - Updated with Hero component sizing logic */}
+            <div 
+              className="relative bg-gray-100 overflow-hidden"
+              style={{ 
+                height: getVideoContainerHeight(),
+                minHeight: isSmallScreen ? '200px' : '250px'
+              }}
+            >
               <video
+                ref={videoRef}
                 key={selectedService.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full"
                 autoPlay
                 muted
                 loop
                 playsInline
                 controls={false}
                 preload="auto"
+                poster=""
+                crossOrigin="anonymous"
+                loading="eager"
+                disablePictureInPicture
+                disableRemotePlaybook
+                x-webkit-airplay="deny"
+                style={{
+                  objectFit: 'cover',
+                  objectPosition: 'center center',
+                  transform: 'translateZ(0)',
+                  backfaceVisibility: 'hidden',
+                  willChange: 'auto',
+                  WebkitTransform: 'translateZ(0)',
+                  WebkitBackfaceVisibility: 'hidden',
+                  imageRendering: 'optimizeSpeed',
+                  transformStyle: 'preserve-3d',
+                  perspective: '1000px',
+                  transition: 'none',
+                  animation: 'none',
+                }}
                 onLoadStart={(e) => {
-                  // Force play on laptops
                   setTimeout(() => {
                     if (e.target.paused) {
                       e.target.play().catch(() => {});
@@ -264,7 +476,6 @@ const ChooseYourService = ({ setCurrentView }) => {
                   }, 100);
                 }}
                 onCanPlay={(e) => {
-                  // Ensure video plays when ready
                   e.target.play().catch(() => {});
                 }}
               >
