@@ -5,7 +5,7 @@ import ContactForm from '../components/ContactForm';
 import References from '../components/Reference1';
 import VideoCarousel from '../components/VideoCarousel';
 import insuranceLogo from '../assets/images/insurance.png';
-import heroBackground from '../assets/images/car6.jpg';
+import heroBackground from '../assets/images/car6.png';
 
 const RemediationClaim = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);

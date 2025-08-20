@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Phone, MessageCircle, Mail, Copy, Check } from 'lucide-react';
 import bbbLogo from '../assets/images/bbb_logo.png.png';
-import car6 from '../assets/images/car6.jpg';
+import car6 from '../assets/images/car6.png';
 
 const Reference1 = () => {
   const [showOptions, setShowOptions] = useState(false);

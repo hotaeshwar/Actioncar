@@ -28,6 +28,7 @@ import FusionPlusWheelCaliper from './components/FusionPlusWheelCaliper'  // Imp
 import FusionPlusGlass from './components/FusionPlusGlass'  // Import the FUSION PLUS GLASS component
 import FusionPlusPlasticTrims from './components/FusionPlusPlasticTrims'  // Import the FUSION PLUS PLASTIC & TRIMS component
 import FusionPlusUpholstery from './components/FusionPlusUpholstery'  // Import the FUSION PLUS UPHOLSTERY component
+import ChooseYourService from './components/ChooseYourService'  // Import the new ChooseYourService component
 
 function App() {
   const [currentView, setCurrentView] = useState('home');
@@ -78,6 +79,8 @@ function App() {
         return <PaintPolishingForm />;
       case 'services':  // Updated services section with local media files (videos & images)
         return <ServicesSection />;
+      case 'choose-your-service':  // Add the new choose your service case
+        return <ChooseYourService setCurrentView={setCurrentView} />;
       case 'home':
       default:
         return (

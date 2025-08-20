@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Download } from 'lucide-react';
-import car6 from '../assets/images/car6.jpg';
+import car6 from '../assets/images/car6.png';
 import bbbLogo from '../assets/images/bbb_logo.png.png';
 import refMurray from '../assets/images/ref_murray1.jpg.png';
 import refRightlook from '../assets/images/ref_rightlook.jpg.png';

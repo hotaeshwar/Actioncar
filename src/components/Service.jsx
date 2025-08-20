@@ -34,7 +34,7 @@ import wash1 from '../assets/images/wash1.png';
 import wash2 from '../assets/images/wash2.png';
 import awardLogo from '../assets/images/award png.png';
 import blogBanner from '../assets/images/blog-banner.jpg';
-import car6 from '../assets/images/car6.jpg';
+import car6 from '../assets/images/car6.png';
 import VideoCarousel from './VideoCarousel';
 import beforeAfterImage from '../assets/images/before-and-after-dent-repair.png';
 
@@ -48,8 +48,8 @@ import qualityGuaranteeImg from '../assets/images/Quality Guarantee.png';
 // Import insurance image for MPI card
 import insuranceImg from '../assets/images/insurance.png';
 
-// Import custom auto detailing assets - UPDATED WITH NEW VIDEO
-import autoDetailingVideo from '../assets/images/Auto detailing Service page.mp4';
+// Import custom auto detailing assets
+import autoDetailingVideo from '../assets/images/Auto Detailing final.mp4';
 import autoDetailingImage from '../assets/images/autodetailing.png';
 
 // Import custom paint correction assets
@@ -79,6 +79,9 @@ import carouselVideo from '../assets/images/carasoulevideo.mp4';
 
 // Import the new award icon - BIGGER VERSION
 import awardHome from '../assets/images/Awardhome.png';
+
+// Import ChooseYourService component
+import ChooseYourService from './ChooseYourService';
 
 // Custom Hook for Scroll Animations
 // REPLACE the existing useScrollAnimation and AnimatedSection with this fixed version:
@@ -147,7 +150,6 @@ const AnimatedSection = ({ children, animationId, delay = 0, className = "", vis
     </div>
   );
 };
-
 const Service = ({ setCurrentView }) => {
   // Scroll animation hook - ONLY DECLARE THIS ONCE
   const { visibleElements, registerElement } = useScrollAnimation();
@@ -159,11 +161,6 @@ const Service = ({ setCurrentView }) => {
   const [isMobileDevice, setIsMobileDevice] = useState(false);
   const videoRefs = useRef([]);
   const intervalRef = useRef(null);
-
-  // Modal state with Hero-style video ref
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedService, setSelectedService] = useState(null);
-  const modalRef = useRef(null);
 
   // Flip card state and modal state for small screens
   const [flippedCards, setFlippedCards] = useState(new Set());
@@ -196,166 +193,6 @@ const Service = ({ setCurrentView }) => {
       description: "Expert care for your vehicle"
     }
   ];
-
-  // Professional service data with custom auto detailing
-  const servicesData = {
-    "Auto Detailing": {
-      title: "Premium Auto Detailing",
-      shortDescription: "Complete interior and exterior restoration services",
-      icon: null,
-      customMedia: {
-        type: 'video',
-        src: autoDetailingVideo,
-        alt: "Professional Auto Detailing Service"
-      },
-      gradientFrom: "sky-400",
-      gradientTo: "sky-600",
-      hoverColor: "sky-600",
-      fullDescription: "Our comprehensive auto detailing service combines advanced techniques with premium-grade products to restore your vehicle to showroom condition. From paint correction polishing to interior deep cleaning, we provide meticulous attention to every detail of your vehicle.",
-      features: [
-        "Professional hand wash with premium soaps and microfiber techniques",
-        "Clay bar treatment to remove embedded contaminants and surface pollution",
-        "Deep interior cleaning with commercial-grade steam cleaning equipment",
-        "Leather conditioning and protective treatment with UV protection",
-        "Dashboard and trim restoration using specialized automotive products",
-        "Complete tire and wheel detailing with protective coating application"
-      ],
-      image: car1,
-      price: "Starting at $199",
-      guarantee: "100% satisfaction guaranteed or we'll make it right",
-      linkTo: 'auto-detailing'
-    },
-    "Paint Correction Polishing": {
-      title: "Paint Correction Polishing",
-      shortDescription: "Restore gloss, clarity, and a factory-fresh finish",
-      icon: null,
-      customMedia: {
-        type: 'video',
-        src: paintCorrectionVideo,
-        alt: "Paint Correction Polishing Service"
-      },
-      gradientFrom: "sky-300",
-      gradientTo: "sky-500",
-      hoverColor: "sky-600",
-      fullDescription: "Our paint correction polishing service eliminates imperfections like swirls, scratches, and oxidation — bringing your vehicle's paint back to life with a deep, flawless shine.",
-      features: [
-        "Scratch and swirl mark removal for a refined finish",
-        "Oxidation and UV damage correction to restore color",
-        "Hologram and buffer trail elimination",
-        "Bird dropping etching safely corrected",
-        "Water spot damage removal from paint and clear coat",
-        "Correction of automatic car wash-induced abrasions"
-      ],
-      image: car3,
-      price: "Starting at $299",
-      guarantee: "Mirror-finish results backed by our craftsmanship warranty",
-      linkTo: 'paint-correction'
-    },
-    "Window Tinting": {
-      title: "Automotive Window Film",
-      shortDescription: "Get Ready to Enjoy Every Drive with XPEL PRIME",
-      icon: null,
-      customMedia: {
-        type: 'video',
-        src: windowTintingVideo,
-        alt: "Window Tinting Service"
-      },
-      gradientFrom: "sky-500",
-      gradientTo: "sky-700",
-      hoverColor: "sky-600",
-      fullDescription: "Stay cool and comfortable behind the wheel with XPEL PRIME. Our cutting-edge window tint doesn't just look great — it blocks out heat, shields you from harmful UV rays, cuts down glare, and still keeps your view perfectly clear. Experience the perfect blend of protection and driving comfort every time you hit the road.",
-      features: [
-        "Premium ceramic film technology for superior performance",
-        "99% UV ray blocking for interior and occupant protection",
-        "Up to 80% heat rejection for improved comfort and efficiency",
-        "Significant glare reduction for safer driving",
-        "Lifetime warranty against bubbling, peeling, and fading",
-        "Computer-cut precision templates for perfect fitment"
-      ],
-      image: car4,
-      price: "Starting at $249",
-      guarantee: "Lifetime warranty with professional installation guarantee",
-      linkTo: 'window-tinting'
-    },
-    "Ceramic Coating": {
-      title: "Automotive Ceramic Coating",
-      shortDescription: "Leave Water (and Worries) Behind with FUSION PLUS™",
-      icon: null,
-      customMedia: {
-        type: 'video',
-        src: ceramicCoatingVideo,
-        alt: "Ceramic Coating Service"
-      },
-      gradientFrom: "sky-400",
-      gradientTo: "sky-600",
-      hoverColor: "sky-600",
-      fullDescription: "Keep your ride looking spotless without the extra effort. FUSION PLUS creates a strong bond with your car's surface to repel water, dirt, and grime, making cleanups quick and easy. Less fuss, more time to enjoy the drive.",
-      features: [
-        "9H hardness ceramic protection exceeding OEM paint durability",
-        "Defends against stains, chemical etching, and environmental damage",
-        "Enhanced gloss and color depth for premium appearance",
-        "Superior hydrophobic properties for easy maintenance",
-        "Chemical and contaminant resistance",
-        "UV damage prevention and color fade protection"
-      ],
-      image: wash1,
-      price: "Starting at $499",
-      guarantee: "5-year performance warranty with certified application",
-      linkTo: 'ceramic-coatings'
-    },
-    "Paint Protection Film": {
-      title: "Paint Protection Film",
-      shortDescription: "Invisible protection against chips, scratches, and road debris",
-      icon: null,
-      customMedia: {
-        type: 'video',
-        src: paintProtectionVideo,
-        alt: "Paint Protection Film Service"
-      },
-      gradientFrom: "sky-300",
-      gradientTo: "sky-500",
-      hoverColor: "sky-600",
-      fullDescription: "Our advanced PPF provides unmatched defense with self-healing technology and a 10-year manufacturer warranty — preserving your vehicle's paint and long-term value.",
-      features: [
-        "Guards against rock chips, scratches, and road debris",
-        "Self-healing properties for long-term clarity and shine",
-        "Helps retain resale value by protecting original paint",
-        "Reduces maintenance caused by frequent washing or wear",
-        "Installed using custom-fit templates for near-invisible finish",
-        "Backed by XPEL Ultimate Plus+ and a 10-year warranty"
-      ],
-      image: wash2,
-      price: "Starting at $899",
-      guarantee: "10-year warranty covering film performance and installation",
-      linkTo: 'paint-protection-film'
-    },
-    "Dent Repair": {
-      title: "Professional Dent Repair",
-      shortDescription: "Paintless dent removal and traditional repair services",
-      icon: null,
-      customMedia: {
-        type: 'video',
-        src: dentRepairVideo,
-        alt: "Dent Repair Service"
-      },
-      gradientFrom: "sky-400",
-      gradientTo: "sky-600",
-      hoverColor: "sky-600",
-      fullDescription: "Our expert dent repair technicians use advanced paintless dent removal (PDR) techniques and traditional repair methods to restore your vehicle's body to its original condition.",
-      features: [
-        "Paintless Dent Removal (PDR) for minor dents and dings",
-        "Traditional bodywork for more extensive damage",
-        "Hail damage repair and restoration",
-        "Door ding and parking lot damage correction",
-        "Creased and sharp dent repair capabilities",
-        "Insurance claim assistance and documentation"
-      ],
-      image: beforeAfterImage,
-      price: "Starting at $150",
-      guarantee: "100% satisfaction with warranty on all repair work",
-      linkTo: 'dent-repair'
-    }
-  };
 
   // Updated card data with imported images for blue card design
   const blueCardData = [
@@ -613,60 +450,16 @@ const Service = ({ setCurrentView }) => {
     goToSlide((currentSlide - 1 + videos.length) % videos.length);
   }, [currentSlide, videos.length, goToSlide]);
 
-  // Service modal handlers
-  const openModal = (serviceName) => {
-    setSelectedService(servicesData[serviceName]);
-    setIsModalOpen(true);
-    document.body.style.overflow = 'hidden';
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    document.body.style.overflow = 'auto';
-  };
-
-  // FIXED: Handle service booking/navigation with scroll to top
-  const handleBookService = () => {
-    if (selectedService?.linkTo && setCurrentView) {
-      // Close modal first
-      closeModal();
-
-      // Small delay to ensure modal closes before navigation
-      setTimeout(() => {
-        // Navigate to the new page
-        setCurrentView(selectedService.linkTo);
-
-        // Scroll to top of the page immediately
-        window.scrollTo({
-          top: 0,
-          left: 0,
-          behavior: 'instant' // Use instant for immediate scroll
-        });
-
-        // Also ensure document scroll is reset
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-      }, 100);
-    } else {
-      console.log('Book service:', selectedService.title);
-    }
-  };
-
   // SIMPLIFIED Click outside detection
   useEffect(() => {
     const handleClickOutside = (event) => {
-      // Service modal
-      if (modalRef.current && !modalRef.current.contains(event.target) && event.target.classList.contains('modal-backdrop')) {
-        closeModal();
-      }
-
       // Blue card modal
       if (blueCardModalRef.current && !blueCardModalRef.current.contains(event.target) && event.target.classList.contains('blue-card-modal-backdrop')) {
         closeBlueCardModal();
       }
     };
 
-    if (isModalOpen || isBlueCardModalOpen) {
+    if (isBlueCardModalOpen) {
       document.addEventListener('mousedown', handleClickOutside);
       document.addEventListener('touchstart', handleClickOutside);
     }
@@ -675,7 +468,7 @@ const Service = ({ setCurrentView }) => {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('touchstart', handleClickOutside);
     };
-  }, [isModalOpen, isBlueCardModalOpen]);
+  }, [isBlueCardModalOpen]);
 
   // Close modals with escape key
   useEffect(() => {
@@ -683,18 +476,17 @@ const Service = ({ setCurrentView }) => {
       if (event.key === 'Escape') {
         if (isBlueCardModalOpen) closeBlueCardModal();
         if (isCardModalOpen) closeCardModal();
-        if (isModalOpen) closeModal();
       }
     };
 
-    if (isModalOpen || isCardModalOpen || isBlueCardModalOpen) {
+    if (isCardModalOpen || isBlueCardModalOpen) {
       document.addEventListener('keydown', handleEscKey);
     }
 
     return () => {
       document.removeEventListener('keydown', handleEscKey);
     };
-  }, [isModalOpen, isCardModalOpen, isBlueCardModalOpen]);
+  }, [isCardModalOpen, isBlueCardModalOpen]);
 
   // Listen for window resize to handle screen size changes
   useEffect(() => {
@@ -769,101 +561,6 @@ const Service = ({ setCurrentView }) => {
     playCurrentVideo();
   }, [currentSlide, isMobileDevice]);
 
-  // Updated renderServiceCard function - FIXED VIDEO REFRESHING IN CARDS
-  const renderServiceCard = (icon, title, description, customIcon = null, index = 0) => {
-    const serviceData = servicesData[title];
-
-    return (
-      <AnimatedSection
-        animationId={`service-card-${index}`}
-        delay={index * 100}
-        className="group cursor-pointer bg-gradient-to-br from-sky-500 via-sky-600 to-sky-700 backdrop-blur-lg rounded-2xl shadow-xl shadow-sky-500/30 hover:shadow-2xl hover:shadow-sky-600/40 transition-all duration-500 p-6 sm:p-8 text-center transform hover:-translate-y-3 hover:scale-105 relative overflow-hidden border border-sky-400/50"
-        visibleElements={visibleElements}
-        registerElement={registerElement}
-      >
-        <div
-          onClick={() => openModal(title)}
-          className="w-full h-full"
-        >
-          {/* Mirror shine effect like Action Car Detailing cards */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1500 ease-in-out skew-x-12"></div>
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-white/5 opacity-70"></div>
-
-          {/* Decorative elements matching Action Car Detailing cards */}
-          <div className="absolute top-4 right-4 w-2 h-2 bg-white/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          <div className="absolute bottom-8 left-6 w-1 h-1 bg-white/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-          <div className="absolute top-1/2 right-8 w-1.5 h-1.5 bg-white/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-          <div className="relative z-10">
-            <div className="mb-6 flex justify-center">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center shadow-xl shadow-black/30 border border-white/30 group-hover:scale-110 transition-all duration-500 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                {/* FIXED: Use static images instead of videos in service cards */}
-                {title === "Auto Detailing" ? (
-                  <img
-                    src={autoDetailingImage}
-                    alt="Auto Detailing Service"
-                    className="w-16 h-16 sm:w-18 sm:h-18 object-contain z-10 relative group-hover:scale-110 transition-transform duration-300"
-                    style={{ filter: 'brightness(0) invert(1)' }}
-                  />
-                ) : title === "Paint Correction Polishing" ? (
-                  <img
-                    src={paintCorrectionImage}
-                    alt="Paint Correction Service"
-                    className="w-16 h-16 sm:w-18 sm:h-18 object-contain z-10 relative group-hover:scale-110 transition-transform duration-300"
-                    style={{ filter: 'brightness(0) invert(1)' }}
-                  />
-                ) : title === "Window Tinting" ? (
-                  <img
-                    src={windowTintingImage}
-                    alt="Window Tinting Service"
-                    className="w-16 h-16 sm:w-18 sm:h-18 object-contain z-10 relative group-hover:scale-110 transition-transform duration-300"
-                    style={{ filter: 'brightness(0) invert(1)' }}
-                  />
-                ) : title === "Ceramic Coating" ? (
-                  <img
-                    src={wash2}
-                    alt="Ceramic Coating Service"
-                    className="w-16 h-16 sm:w-18 sm:h-18 object-contain z-10 relative group-hover:scale-110 transition-transform duration-300"
-                    style={{ filter: 'brightness(0) invert(1)' }}
-                  />
-                ) : title === "Paint Protection Film" ? (
-                  <img
-                    src={wash1}
-                    alt="Paint Protection Film Service"
-                    className="w-16 h-16 sm:w-18 sm:h-18 object-contain z-10 relative group-hover:scale-110 transition-transform duration-300"
-                    style={{ filter: 'brightness(0) invert(1)' }}
-                  />
-                ) : title === "Dent Repair" ? (
-                  <img
-                    src={dentRepairImage}
-                    alt="Dent Repair Service"
-                    className="w-16 h-16 sm:w-18 sm:h-18 object-contain z-10 relative group-hover:scale-110 transition-transform duration-300"
-                    style={{ filter: 'brightness(0) invert(1)' }}
-                  />
-                ) : customIcon ? (
-                  customIcon
-                ) : (
-                  <FontAwesomeIcon icon={icon} className="text-white text-2xl sm:text-3xl z-10 relative group-hover:scale-110 transition-transform duration-300" />
-                )}
-              </div>
-            </div>
-
-            <div className="text-center">
-              <h3 className="text-xl sm:text-2xl font-bold mb-3 text-white group-hover:text-cyan-100 transition-colors duration-300">{title}</h3>
-              <p className="text-sm sm:text-base text-white/90 mb-4 leading-relaxed">{description}</p>
-              <div className="flex items-center justify-center text-white/80 hover:text-white transition-colors group-hover:scale-110 group-hover:font-semibold">
-                <span className="text-sm sm:text-base mr-2">View Details</span>
-                <FontAwesomeIcon icon={faArrowRight} className="transform group-hover:translate-x-2 transition-transform duration-300" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </AnimatedSection>
-    );
-  };
-
   // Blue Card Component - UPDATED TO MATCH ACTION CAR DETAILING CARD COLORS
   const renderBlueCard = (cardData, index = 0) => (
     <div className="group cursor-pointer w-full">
@@ -930,13 +627,24 @@ const Service = ({ setCurrentView }) => {
   const BlueCardsSection = () => (
     <div className="pb-8 md:pb-12 lg:pb-16 xl:pb-20 relative overflow-hidden bg-white -mt-4 blue-cards-container">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* ALL 5 CARDS IN EQUAL GRID - NO SEPARATE ROWS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6 lg:gap-8 xl:gap-6 justify-items-center place-items-center">
-          {blueCardData.map((card, index) => (
-            <div key={card.id || `blue-card-${index}`} className="w-full max-w-xs">
-              {renderBlueCard(card, index)}
-            </div>
-          ))}
+        <div className="flex flex-col gap-4 sm:gap-6 lg:gap-8">
+          {/* Top Row - 3 Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 justify-items-center place-items-center">
+            {blueCardData.slice(0, 3).map((card, index) => (
+              <div key={card.id || `blue-card-top-${index}`} className="w-full max-w-[280px] equal-card-size">
+                {renderBlueCard(card, index)}
+              </div>
+            ))}
+          </div>
+
+          {/* Bottom Row - 2 Cards Centered */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 justify-items-center place-items-center max-w-[600px] mx-auto">
+            {blueCardData.slice(3, 5).map((card, index) => (
+              <div key={card.id || `blue-card-bottom-${index}`} className="w-full max-w-[280px] equal-card-size">
+                {renderBlueCard(card, index + 3)}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -1153,192 +861,6 @@ const Service = ({ setCurrentView }) => {
     );
   };
 
-  // SEAMLESS LOOP: Never let video reach endpoint to prevent browser refresh
-  const ServiceModal = () => {
-    if (!isModalOpen || !selectedService) return null;
-
-    const modalVideoRef = useRef(null);
-
-    // Get video source - stable memo
-    const videoSource = React.useMemo(() => {
-      switch (selectedService.title) {
-        case "Paint Protection Film": return paintProtectionVideo;
-        case "Professional Dent Repair": return dentRepairVideo;
-        case "Premium Auto Detailing": return autoDetailingVideo;
-        case "Paint Correction Polishing": return paintCorrectionVideo;
-        case "Automotive Window Film": return windowTintingVideo;
-        case "Automotive Ceramic Coating": return ceramicCoatingVideo;
-        default: return null;
-      }
-    }, [selectedService.title]);
-
-    // CRITICAL: Prevent video from ever reaching its natural endpoint
-    useEffect(() => {
-      const video = modalVideoRef.current;
-      
-      if (video && videoSource) {
-        const handleTimeUpdate = () => {
-          // Reset video much earlier - 1 full second before end
-          if (video.duration && video.currentTime >= video.duration - 1.0) {
-            video.currentTime = 0.1; // Start slightly after beginning
-          }
-        };
-
-        const handleCanPlay = () => {
-          video.currentTime = 0.1; // Start slightly after beginning
-          video.play().catch(() => {});
-        };
-
-        // Remove loop attribute completely and handle manually
-        video.loop = false;
-        video.addEventListener('timeupdate', handleTimeUpdate);
-        video.addEventListener('canplay', handleCanPlay);
-
-        return () => {
-          video.removeEventListener('timeupdate', handleTimeUpdate);
-          video.removeEventListener('canplay', handleCanPlay);
-        };
-      }
-    }, [videoSource, isModalOpen]);
-
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
-        <div className="absolute inset-0 bg-black/80 backdrop-blur-md"></div>
-
-        <div
-          ref={modalRef}
-          className="relative bg-white rounded-2xl shadow-3xl max-w-2xl w-full mx-auto overflow-hidden transform transition-all duration-500 opacity-100 scale-100 border border-gray-200"
-          style={{ maxHeight: '90vh' }}
-        >
-          {/* VIDEO SECTION - No native loop, manual seamless loop */}
-          <div 
-            className="relative bg-black"
-            style={{ 
-              height: '250px',
-              minHeight: '250px',
-              maxHeight: '250px',
-              overflow: 'hidden'
-            }}
-          >
-            {videoSource ? (
-              <video
-                ref={modalVideoRef}
-                className="w-full h-full object-cover object-center"
-                src={videoSource}
-                muted
-                playsInline
-                autoPlay
-                preload="auto"
-                style={{ 
-                  objectFit: 'cover',
-                  width: '100%',
-                  height: '100%',
-                  position: 'absolute',
-                  top: 0,
-                  left: 0
-                }}
-              />
-            ) : (
-              <img
-                src={selectedService.image}
-                alt={selectedService.title}
-                className="w-full h-full object-cover object-center"
-                style={{ 
-                  position: 'absolute',
-                  top: 0,
-                  left: 0
-                }}
-              />
-            )}
-
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                closeModal();
-              }}
-              className="absolute top-4 right-4 w-14 h-14 sm:w-16 sm:h-16 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center backdrop-blur-md transition-all duration-300 border border-white/30 shadow-lg hover:scale-110 z-50"
-              aria-label="Close modal"
-            >
-              <FontAwesomeIcon icon={faTimes} className="text-white text-xl sm:text-2xl" />
-            </button>
-          </div>
-
-          {/* INDEPENDENT SCROLLABLE TEXT CONTENT */}
-          <div 
-            className="bg-white"
-            style={{
-              height: 'calc(90vh - 250px - 80px)',
-              minHeight: '300px',
-              maxHeight: 'calc(90vh - 250px - 80px)',
-              overflow: 'hidden',
-              position: 'relative'
-            }}
-          >
-            <div 
-              className="h-full overflow-y-scroll p-6 sm:p-8"
-              style={{
-                height: '100%',
-                overflowY: 'scroll',
-                scrollBehavior: 'smooth',
-                WebkitOverflowScrolling: 'touch'
-              }}
-            >
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 text-cyan-500">{selectedService.title}</h2>
-              <p className="text-base sm:text-lg text-cyan-400 mb-6 sm:mb-8 leading-relaxed">{selectedService.fullDescription}</p>
-
-              <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-cyan-500 flex items-center">
-                <div className="w-6 h-6 bg-gradient-to-r from-sky-500 to-sky-600 rounded-full mr-3"></div>
-                Features
-              </h3>
-              <ul className="mb-6 sm:mb-8 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                {selectedService.features.map((feature, index) => (
-                  <li key={index} className="flex items-start p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200">
-                    <FontAwesomeIcon icon={faCheck} className="text-sky-500 mt-1 mr-3 text-lg flex-shrink-0" />
-                    <span className="text-base sm:text-lg text-cyan-400">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="bg-gradient-to-r from-sky-50 to-sky-100 p-4 sm:p-6 rounded-2xl mb-6 sm:mb-8 border border-sky-200">
-                <div className="flex justify-between items-center">
-                  <span className="text-base sm:text-lg text-cyan-400 font-semibold">Starting Price</span>
-                  <span className="text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-sky-800">{selectedService.price}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* FIXED BUTTONS AT BOTTOM */}
-          <div 
-            className="border-t border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 flex justify-between items-center"
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: '80px',
-              padding: '16px 24px'
-            }}
-          >
-            <button
-              onClick={closeModal}
-              className="px-6 py-3 sm:px-8 sm:py-4 border-2 border-gray-300 rounded-xl text-base sm:text-lg text-cyan-400 hover:bg-gray-100 hover:border-gray-400 transition-all duration-300 font-medium"
-            >
-              Close
-            </button>
-            <button
-              onClick={handleBookService}
-              className="px-8 py-3 sm:px-10 sm:py-4 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-base sm:text-lg text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 font-semibold"
-            >
-              {selectedService.linkTo ? 'Learn More' : 'Book Service'}
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   // FIXED Card Modal Component - SIMPLE AND WORKING
   const CardModal = () => {
     if (!isCardModalOpen || !selectedCard) return null;
@@ -1531,41 +1053,8 @@ const Service = ({ setCurrentView }) => {
 
   return (
     <>
-      {/* CHOOSE YOUR SERVICE Section */}
-      <AnimatedSection
-        animationId="service-hero"
-        className="py-8 md:py-12 lg:py-16 xl:py-20 relative overflow-hidden bg-white"
-        visibleElements={visibleElements}
-        registerElement={registerElement}
-      >
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <AnimatedSection
-            animationId="service-hero-title"
-            className="text-center mb-8 sm:mb-10 lg:mb-16"
-            visibleElements={visibleElements}
-            registerElement={registerElement}
-          >
-            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-4 relative">
-              <span className="relative z-10 text-sky-400 drop-shadow-2xl">
-                CHOOSE YOUR SERVICE
-              </span>
-              <div className="absolute -bottom-2 sm:-bottom-4 left-1/2 transform -translate-x-1/2 w-32 sm:w-40 lg:w-48 h-1 sm:h-2 bg-gradient-to-r from-sky-500 via-sky-600 to-sky-700 rounded-full shadow-xl shadow-sky-500/50"></div>
-            </h2>
-            <p className="text-xl sm:text-2xl text-cyan-400 max-w-3xl mx-auto leading-relaxed">
-              Transform your vehicle with our premium detailing services
-            </p>
-          </AnimatedSection>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
-            {renderServiceCard(null, "Auto Detailing", "Complete interior and exterior detailing services", null, 0)}
-            {renderServiceCard(null, "Paint Correction Polishing", "Restore gloss, clarity, and a factory-fresh finish", null, 1)}
-            {renderServiceCard(null, "Window Tinting", "Premium tinting solutions", null, 2)}
-            {renderServiceCard(null, "Ceramic Coating", "Long-lasting protection", null, 3)}
-            {renderServiceCard(null, "Paint Protection Film", "Film installation", null, 4)}
-            {renderServiceCard(null, "Dent Repair", "Paintless dent removal and traditional repair services", null, 5)}
-          </div>
-        </div>
-      </AnimatedSection>
+      {/* ChooseYourService Component - Added below hero section */}
+      <ChooseYourService setCurrentView={setCurrentView} />
 
       {/* Section Divider */}
       <SectionDivider animationId="divider-1" />
@@ -1789,7 +1278,6 @@ const Service = ({ setCurrentView }) => {
       </AnimatedSection>
 
       {/* Modals */}
-      <ServiceModal />
       <BusinessDescription setCurrentView={setCurrentView} />
       <CardModal />
       <BlueCardModal />
@@ -1974,37 +1462,45 @@ const Service = ({ setCurrentView }) => {
           margin: 0 auto;
         }
 
+        /* EQUAL CARD SIZING FOR ALL BLUE CARDS */
+        .equal-card-size {
+          width: 100% !important;
+          max-width: 280px !important;
+          min-width: 200px !important;
+        }
+
         .blue-cards-container .aspect-square {
           aspect-ratio: 1 / 1 !important;
           width: 100% !important;
           height: auto !important;
         }
 
-        /* IPAD MINI SPECIFIC TARGETING - FORCE 3-2 LAYOUT */
-        @media (min-width: 768px) and (max-width: 834px) {
-          .blue-cards-container .ipad-mini-top-row {
-            display: grid !important;
-            grid-template-columns: repeat(3, 1fr) !important;
-            gap: 1rem !important;
-            justify-items: center !important;
-            place-items: center !important;
-            width: 100% !important;
+        /* RESPONSIVE CARD SIZING */
+        @media (max-width: 640px) {
+          .equal-card-size {
+            max-width: 260px !important;
+            min-width: 180px !important;
           }
-          
-          .blue-cards-container .ipad-mini-bottom-row {
-            display: grid !important;
-            grid-template-columns: repeat(2, 1fr) !important;
-            gap: 1.5rem !important;
-            justify-items: center !important;
-            place-items: center !important;
-            max-width: 420px !important;
-            margin: 0 auto !important;
-            width: 100% !important;
+        }
+
+        @media (min-width: 641px) and (max-width: 768px) {
+          .equal-card-size {
+            max-width: 240px !important;
+            min-width: 200px !important;
           }
-          
-          .blue-cards-container .ipad-mini-card {
-            max-width: 180px !important;
-            width: 100% !important;
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+          .equal-card-size {
+            max-width: 260px !important;
+            min-width: 220px !important;
+          }
+        }
+
+        @media (min-width: 1025px) {
+          .equal-card-size {
+            max-width: 280px !important;
+            min-width: 240px !important;
           }
         }
 
@@ -2283,52 +1779,6 @@ const Service = ({ setCurrentView }) => {
           .mb-8 { margin-bottom: 1.5rem; }
           .sm\\:mb-10 { margin-bottom: 1.5rem; }
           .lg\\:mb-16 { margin-bottom: 1.5rem; }
-        }
-
-        /* COMPONENT SEPARATION CSS - Completely isolate video from text */
-        .video-only-container {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          contain: strict;
-          isolation: isolate;
-        }
-
-        .video-only-container video {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          background: #000;
-        }
-
-        .text-content-only {
-          contain: layout style paint;
-          isolation: isolate;
-          will-change: auto;
-        }
-
-        .text-content-only h2,
-        .text-content-only p,
-        .text-content-only h3,
-        .text-content-only ul,
-        .text-content-only li,
-        .text-content-only div {
-          contain: layout;
-          will-change: auto;
-        }
-
-        /* Prevent any video events from affecting text components */
-        .video-only-container {
-          pointer-events: none;
-        }
-
-        .text-content-only {
-          pointer-events: auto;
         }
       `}</style>
     </>
