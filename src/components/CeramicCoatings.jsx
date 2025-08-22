@@ -4,7 +4,8 @@ import Footer from '../components/Footer';
 import Quote from '../components/Quote';
 import ContactForm from '../components/ContactForm';
 // Import Ceramic Coating Video
-import ceramicCoatingVideo from '../assets/images/Ceramic Coating Home page.mp4';
+import ceramicCoatingVideo from '../assets/images/Ceramic coating (1).mp4';
+
 import References from '../components/Reference1'; // Added References import
 
 const CeramicCoatings = ({ setCurrentView }) => {
