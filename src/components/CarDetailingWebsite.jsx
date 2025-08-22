@@ -5,7 +5,7 @@ import Booking from '../components/Booking';
 import ContactForm from '../components/ContactForm';
 import References from '../components/Reference1';
 import googlePng from '../assets/images/google png.png';
-import detailingVideo from '../assets/images/Auto Detailing final.mp4';
+import detailingVideo from '../assets/images/Auto detailing Service page.mp4';
 
 // Modal wrapper component that uses the existing Booking component
 const BookingModal = ({ isOpen, onClose }) => {
