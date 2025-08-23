@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import ChatBot from './components/ChatBot'
@@ -32,6 +32,11 @@ import ChooseYourService from './components/ChooseYourService'  // Import the ne
 
 function App() {
   const [currentView, setCurrentView] = useState('home');
+  
+  // Auto scroll to top whenever the view changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentView]);
   
   const renderView = () => {
     switch(currentView) {
