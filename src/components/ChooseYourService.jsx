@@ -351,7 +351,7 @@ const ChooseYourService = ({ setCurrentView }) => {
       image: car3,
       video: paintCorrectionVideo,
       icon: paintCorrectionImage,
-      price: "Starting at $299",
+      price: "Starting at $200",
       linkTo: 'paint-correction'
     },
     "Window Tinting": {
