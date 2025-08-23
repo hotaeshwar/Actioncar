@@ -75,7 +75,7 @@ import dentRepairImage from '../assets/images/dent repair.png';
 import carwashing1 from '../assets/images/carwashing1.mp4';
 import carwashing2 from '../assets/images/carwashing2.mp4';
 import carwashing4 from '../assets/images/carwashing4.mp4';
-import carouselVideo from '../assets/images/carasoulevideo.mp4';
+import carouselVideo from '../assets/images/Ceramic coating (1).mp4';
 
 // Import the new award icon - BIGGER VERSION
 import awardHome from '../assets/images/Awardhome.png';
@@ -1101,6 +1101,7 @@ const Service = ({ setCurrentView }) => {
             </p>
           </AnimatedSection>
 
+
           {/* Video Slider */}
           <AnimatedSection
             animationId="video-slider"
@@ -1114,28 +1115,34 @@ const Service = ({ setCurrentView }) => {
                   className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === index ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
                 >
                   <video
-                    ref={el => videoRefs.current[index] = el}
+                    ref={(el) => {
+                      videoRefs.current[index] = el;
+                    }}
                     src={video.src}
                     className="w-full h-full object-cover"
                     muted
-                    loop
                     playsInline
-                    preload={index === 0 ? "auto" : isMobileDevice ? "none" : "metadata"}
-                    poster={index === currentSlide ? undefined : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3C/svg%3E"}
+                    preload="metadata"
+                    onEnded={() => {
+                      console.log(`Video ${index} completed!`);
+                      // Only move to next slide if this is the current active video
+                      if (index === currentSlide) {
+                        // Wait a moment then go to next slide
+                        setTimeout(() => {
+                          const nextIndex = (index + 1) % videos.length;
+                          setCurrentSlide(nextIndex);
+                          // Auto-start next video
+                          setTimeout(() => {
+                            if (videoRefs.current[nextIndex]) {
+                              videoRefs.current[nextIndex].play();
+                            }
+                          }, 300);
+                        }, 500);
+                      }
+                    }}
                     onLoadedData={() => {
                       if (index === currentSlide) {
                         setIsVideoLoaded(true);
-                      }
-                    }}
-                    onError={(e) => {
-                      console.log(`Video ${index} error:`, e);
-                    }}
-                    onWaiting={() => {
-                      console.log(`Video ${index} buffering...`);
-                    }}
-                    onCanPlay={() => {
-                      if (index === currentSlide) {
-                        console.log(`Video ${index} can play`);
                       }
                     }}
                     style={{
@@ -1155,7 +1162,7 @@ const Service = ({ setCurrentView }) => {
                     </div>
                   </div>
 
-                  {isMobileDevice && !isVideoLoaded && index === currentSlide && (
+                  {!isVideoLoaded && index === currentSlide && (
                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-20">
                       <div className="w-8 h-8 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
                     </div>
